@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_ochoa/src/bloc/provider.dart';
 
-class LoginPage extends StatelessWidget {
+class SignUpPage extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
 		//* MediaQuery
@@ -64,17 +64,8 @@ class LoginPage extends StatelessWidget {
 		final bloc = Provider.of(context);
 
 		final title = Text(
-			'Iniciar sesión',
+			'Crear una cuenta',
 			style: TextStyle(fontSize: 20.0),
-		);
-
-		final createPswdButton = Container(
-			padding: EdgeInsets.only(right: 16.0),
-			alignment: Alignment.centerRight,
-			child: TextButton(
-				child: Text('Olvidé mi contraseña'),
-				onPressed: (){}
-			),
 		);
 
 		return SingleChildScrollView(
@@ -98,19 +89,16 @@ class LoginPage extends StatelessWidget {
 
 								createPassword(bloc),
 
-								SizedBox(height: 10.0),
+								SizedBox(height: 60.0),
 
-								createPswdButton,
-
-								SizedBox(height: 30.0),
-
-								createLoginButton(bloc),
+								createSingUpButton(bloc),
 
 								SizedBox(height: 30.0),
 
-                createSignUp(context),
+                createLogin(context),
 
 								SizedBox(height: 10.0),
+
 							],
 						),
 					),
@@ -120,33 +108,6 @@ class LoginPage extends StatelessWidget {
 			)
 		);
 
-	}
-
-	Widget createLoginButton(LoginBloc bloc) {
-	  //* Propiedad para el ElevatedButton
-		OutlinedBorder getBorderRadius(Set<MaterialState> states) {
-			return RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0));
-		}
-
-		return StreamBuilder(
-			stream: bloc.formValidStream,
-			builder: (BuildContext context, AsyncSnapshot snapshot){
-
-				return ElevatedButton(
-					style: ButtonStyle(
-						shape: MaterialStateProperty.resolveWith<OutlinedBorder>(getBorderRadius)
-					),
-					child: Text('Iniciar sesión'),
-
-					onPressed: snapshot.hasData ?
-						() => _login(context, bloc)
-						:
-						null,
-				);
-
-			},
-		);
-		
 	}
 
 	Widget createEmail(LoginBloc bloc) {
@@ -215,23 +176,58 @@ class LoginPage extends StatelessWidget {
 
 	}
 
+	Widget createSingUpButton(LoginBloc bloc) {
+	  //* Propiedad para el ElevatedButton
+		OutlinedBorder getBorderRadius(Set<MaterialState> states) {
+			return RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0));
+		}
+
+		return StreamBuilder(
+			stream: bloc.formValidStream,
+			builder: (BuildContext context, AsyncSnapshot snapshot){
+
+				return ElevatedButton(
+					style: ButtonStyle(
+						shape: MaterialStateProperty.resolveWith<OutlinedBorder>(getBorderRadius)
+					),
+					child: Text('Registrarse'),
+
+					onPressed: snapshot.hasData ?
+						() => _login(context, bloc)
+						:
+						null,
+				);
+
+			},
+		);
+		
+	}
+
   _login(BuildContext context, LoginBloc bloc) {
 
     Navigator.pushReplacementNamed(context, 'home');
 
   }
 
-  Widget createSignUp(BuildContext context) {
+  Widget createLogin(BuildContext context) {
 
     return Container(
       padding: EdgeInsets.only(right: 16.0),
-      alignment: Alignment.centerRight,
-      child: TextButton(
-        child: Text('Crear una cuenta'),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
 
-        onPressed: () => Navigator.pushReplacementNamed(context, 'signup'),
+        children: [
+          Text('¿Ya tiene una cuenta?'),
+
+          TextButton(
+            child: Text('Inicie sesión'),
+
+            onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
+          ),
+        ],
       ),
     );
+    
   }
 
 }
