@@ -1,3 +1,4 @@
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:sistema_ochoa/src/bloc/provider.dart';
 import 'package:sistema_ochoa/src/pages/home_page.dart';
@@ -12,14 +13,24 @@ class MyApp extends StatelessWidget {
     return  Provider(
 
       child: MaterialApp(
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('es', 'ES'),
+          const Locale('en', 'US')
+        ],
+
         debugShowCheckedModeBanner: false,
         title: 'Material App',
         
-        initialRoute: 'login',
+        initialRoute: 'home',
         routes: {
           'login'   : (BuildContext context) => LoginPage(),
-          'home'    : (BuildContext context) => Home(),
           'signup'  : (BuildContext context) => SignUpPage(),
+          'home'    : (BuildContext context) => Home(),
         },
 
         theme: ThemeData(

@@ -35,7 +35,7 @@ class SignUpPage extends StatelessWidget {
 				Image.asset(
 					'lib/src/img/logo.png',
 					fit: BoxFit.cover,
-					scale: 0.5,
+					scale: 0.75,
 				),
 
 				SizedBox(height: 10.0),
@@ -43,8 +43,8 @@ class SignUpPage extends StatelessWidget {
 				Text(
           'Servicios Industriales Ochoa',
           style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 18.0,
+            color: Color.fromRGBO(127, 133, 137, 1.0),
+            fontSize: 24.0,
             fontWeight: FontWeight.bold
           )
         )
