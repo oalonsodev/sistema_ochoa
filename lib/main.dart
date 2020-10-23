@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Material App',
         
-        initialRoute: 'home',
+        initialRoute: 'login',
         routes: {
           'login'   : (BuildContext context) => LoginPage(),
           'signup'  : (BuildContext context) => SignUpPage(),

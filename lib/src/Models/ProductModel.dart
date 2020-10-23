@@ -51,12 +51,12 @@ class ProductModel {
 		"id"								: id,
 		"fecha"							: fecha,
 		"folio"							: folio,
-		"noReq"						: noReq,
+		"noReq"						  : noReq,
 		"cliente"						: cliente,
 		"direccion"					: direccion,
 		"comprador"					: comprador,
 		"departamento"			: departamento,
 		"condicionesVenta"	: condicionesVenta,
-		"tiempoEntrega"		: tiempoEntrega,
+		"tiempoEntrega"		  : tiempoEntrega,
 	};
 }

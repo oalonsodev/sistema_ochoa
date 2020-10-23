@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sistema_ochoa/src/providers/products_provider.dart';
 
 import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
 import 'package:sistema_ochoa/src/Models/ProductModel.dart';
@@ -12,12 +13,15 @@ class CotizacionesPage extends StatefulWidget {
 class _CotizacionesPageState extends State<CotizacionesPage> {
   //* Key del Widget Form
   final formKey = new GlobalKey<FormState>();
-
   //* Modelo de producto
   ProductModel product = new ProductModel();
+  //* Proveedor de métodos para los procesos REST de productos
+  final productProvider = new ProductsProvider();
+
 
   //* ======= PageOne ======= 
   //? Valores del formulario
+  String _dropDownValue = 'Condiciones de venta';
  
   //? Controladores
   TextEditingController _controllerDatePicker = new TextEditingController();
@@ -33,6 +37,8 @@ class _CotizacionesPageState extends State<CotizacionesPage> {
   Widget build(BuildContext context) {
     //* Asignar valor inicial al TextFormField del DatePicker sin afectar a las
     //* asignaciones hechas desde el DatePicker.
+    //! SI coloco el valor directamente en product.fecha pues es un valor que
+    //! viene predefinido con la fecha actual en todas las cotizaciones.
     if ( utils.isToday(product.fecha) )
       _controllerDatePicker.text = product.fecha;
 
@@ -115,6 +121,7 @@ class _CotizacionesPageState extends State<CotizacionesPage> {
       onTap: ()=> _createDatePicker(context),
       
       validator: (value) => utils.formFieldIsEmpty(value),
+      onSaved: (value) => product.fecha = value,
     );
   }
 
@@ -124,9 +131,9 @@ class _CotizacionesPageState extends State<CotizacionesPage> {
         labelText: 'Folio de la cotización',
         border: OutlineInputBorder()
       ),
-      onSaved: (value) => product.folio = value,
       
       validator: (value) => utils.formFieldIsEmpty(value),
+      onSaved: (value) => product.folio = value,
     );
   }
 
@@ -137,7 +144,8 @@ class _CotizacionesPageState extends State<CotizacionesPage> {
         border: OutlineInputBorder()
       ),
       
-      validator: (value) => utils.formFieldIsEmpty(value),
+      validator: (value) => utils.formFielIsNumeric(value),
+      onSaved: (value) => product.noReq = num.parse(value),
     );
   }
 
@@ -149,6 +157,7 @@ class _CotizacionesPageState extends State<CotizacionesPage> {
       ),
       
       validator: (value) => utils.formFieldIsEmpty(value),
+      onSaved: (value) => product.cliente = value,
     );
   }
 
@@ -160,6 +169,7 @@ class _CotizacionesPageState extends State<CotizacionesPage> {
       ),
       
       validator: (value) => utils.formFieldIsEmpty(value),
+      onSaved: (value) => product.direccion = value,
     );
   }
 
@@ -171,6 +181,7 @@ class _CotizacionesPageState extends State<CotizacionesPage> {
       ),
       
       validator: (value) => utils.formFieldIsEmpty(value),
+      onSaved: (value) => product.comprador = value,
     );
   }
 
@@ -182,29 +193,24 @@ class _CotizacionesPageState extends State<CotizacionesPage> {
       ),
       
       validator: (value) => utils.formFieldIsEmpty(value),
+      onSaved: (value) => product.departamento = value,
     );
   }
 
   Widget _createTFFCondicionesV() {
-    return Row(
-      //* Coloca el espacio disponible entre los hijos
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
+    return DropdownButtonFormField<String>(
+      value: _dropDownValue,
+      onChanged: (optSelect) => setState(()=> _dropDownValue = optSelect),
 
-        Text('Condiciones de venta:'),
-
-        DropdownButton<String>(
-          // isExpanded: true, //* Expande el DropdownB horizontalmente
-          items: [
-            DropdownMenuItem(child: Text('De contado'), ),
-            DropdownMenuItem(child: Text('A crédito')),
-            DropdownMenuItem(child: Text('50% de contado, 50% a crédito')),
-          ],
-          onChanged: (opt){},
-        )
-      ],
+      items:<String>[
+        'Condiciones de venta', 'De contado',
+        'A crédito', '50% de contado, 50% a crédito'].map((String opt)
+          => DropdownMenuItem(child: Text(opt), value: opt)).toList(),
+      
+      validator: (value) => utils.dropDownIsValid(value),
+      onSaved: (value) => product.condicionesVenta = value,
     );
-    
+
   }
 
   TextFormField _createTFFTiempoE() {
@@ -215,6 +221,7 @@ class _CotizacionesPageState extends State<CotizacionesPage> {
       ),
 
       validator: (value) => utils.formFieldIsEmpty(value),
+      onSaved: (value) => product.tiempoEntrega = value,
     );
   }
 
@@ -224,7 +231,15 @@ class _CotizacionesPageState extends State<CotizacionesPage> {
       child: TextButton(
         child: Text('Siguiente'),
         onPressed: (){
-          formKey.currentState.validate();
+          //* Si hay algun error, no se ejecutan las lineas despues de esta
+          //* condición. Es decir que no se guardan los datos del formulario.
+          if( !formKey.currentState.validate() ) return;
+
+          formKey.currentState.save();
+          print(product.toJson());
+
+          productProvider.crearProducto(product);
+
         }
       ),
     );

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_ochoa/src/bloc/provider.dart';
+import 'package:sistema_ochoa/src/providers/user_provider.dart';
+import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
 
 class LoginPage extends StatelessWidget {
+  final userProvider = new UserProvider();
+
 	@override
 	Widget build(BuildContext context) {
 		//* MediaQuery
@@ -122,33 +126,6 @@ class LoginPage extends StatelessWidget {
 
 	}
 
-	Widget createLoginButton(LoginBloc bloc) {
-	  //* Propiedad para el ElevatedButton
-		OutlinedBorder getBorderRadius(Set<MaterialState> states) {
-			return RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0));
-		}
-
-		return StreamBuilder(
-			stream: bloc.formValidStream,
-			builder: (BuildContext context, AsyncSnapshot snapshot){
-
-				return ElevatedButton(
-					style: ButtonStyle(
-						shape: MaterialStateProperty.resolveWith<OutlinedBorder>(getBorderRadius)
-					),
-					child: Text('Iniciar sesión'),
-
-					onPressed: snapshot.hasData ?
-						() => _login(context, bloc)
-						:
-						null,
-				);
-
-			},
-		);
-		
-	}
-
 	Widget createEmail(LoginBloc bloc) {
 		//* ¿Cómo funciona este STBuilder?
 		//* El Textield le manda información con cada cambio mediante el
@@ -215,9 +192,42 @@ class LoginPage extends StatelessWidget {
 
 	}
 
-  _login(BuildContext context, LoginBloc bloc) {
+	Widget createLoginButton(LoginBloc bloc) {
+	  //* Propiedad para el ElevatedButton
+		OutlinedBorder getBorderRadius(Set<MaterialState> states) {
+			return RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0));
+		}
 
-    Navigator.pushReplacementNamed(context, 'home');
+		return StreamBuilder(
+			stream: bloc.formValidStream,
+			builder: (BuildContext context, AsyncSnapshot snapshot){
+
+				return ElevatedButton(
+					style: ButtonStyle(
+						shape: MaterialStateProperty.resolveWith<OutlinedBorder>(getBorderRadius)
+					),
+					child: Text('Iniciar sesión'),
+
+					onPressed: snapshot.hasData ?
+						() => _login(context, bloc)
+						:
+						null,
+				);
+
+			},
+		);
+		
+	}
+
+  void _login(BuildContext context, LoginBloc bloc) async{
+
+    Map<String, dynamic> info = await userProvider.login(bloc.emailValue, bloc.passwordValue);
+
+    if (info['ok'] == true) {
+      Navigator.pushReplacementNamed(context, 'home');
+    } else {
+      utils.showMessage(context, info['message']);
+    }
 
   }
 

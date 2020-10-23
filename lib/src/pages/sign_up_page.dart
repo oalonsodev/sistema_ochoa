@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_ochoa/src/bloc/provider.dart';
+import 'package:sistema_ochoa/src/providers/user_provider.dart';
+import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
 
 class SignUpPage extends StatelessWidget {
+
+  final userProvider = new UserProvider();
+
 	@override
 	Widget build(BuildContext context) {
 		//* MediaQuery
@@ -95,7 +100,7 @@ class SignUpPage extends StatelessWidget {
 
 								SizedBox(height: 30.0),
 
-                createLogin(context),
+                createRegister(context),
 
 								SizedBox(height: 10.0),
 
@@ -193,7 +198,7 @@ class SignUpPage extends StatelessWidget {
 					child: Text('Registrarse'),
 
 					onPressed: snapshot.hasData ?
-						() => _login(context, bloc)
+						() => _signUp(context, bloc)
 						:
 						null,
 				);
@@ -203,13 +208,19 @@ class SignUpPage extends StatelessWidget {
 		
 	}
 
-  _login(BuildContext context, LoginBloc bloc) {
+  void _signUp(BuildContext context, LoginBloc bloc) async{
+    
+    Map<String, dynamic> info = await userProvider.login(bloc.emailValue, bloc.passwordValue);
 
-    Navigator.pushReplacementNamed(context, 'home');
+    if (info['ok'] == true) {
+      Navigator.pushReplacementNamed(context, 'home');
+    } else {
+      utils.showMessage(context, info['message']);
+    }
 
   }
 
-  Widget createLogin(BuildContext context) {
+  Widget createRegister(BuildContext context) {
 
     return Container(
       padding: EdgeInsets.only(right: 16.0),
