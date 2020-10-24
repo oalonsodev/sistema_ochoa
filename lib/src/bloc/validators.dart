@@ -5,7 +5,7 @@ class Validators {
 	final validatePassword = StreamTransformer<String, String>.fromHandlers(
 		handleData: (password, sink) {
 
-			if (password.length >= 8) 
+			if (password.isEmpty || password.length >= 8) 
 				sink.add(password);  
 			else
 				sink.addError('Ingrese almenos 8 caractéres');
@@ -19,7 +19,7 @@ class Validators {
 			Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 			RegExp regExp = new RegExp(pattern);
 
-			if (regExp.hasMatch(email)) 
+			if (email.isEmpty || regExp.hasMatch(email)) 
 				sink.add(email);
 			else
 				sink.addError('Correo inválido');

@@ -22,14 +22,12 @@ class UserProvider {
 		print(decodedResp);
 
 		if (decodedResp.containsKey('idToken')) {
-			//TODO: salvar el token en el storage
 			return {'ok': true, 'idToken' : decodedResp['idToken']};
 
 		} else {
-			//TODO: Devolver un mensaje de error
 			return {'ok': false, 'message' : decodedResp['error']['message']};
 		}
-
+    
 	}
 
 	Future<Map<String, dynamic>> newUser(String email, String password) async {
@@ -49,12 +47,10 @@ class UserProvider {
 		print(decodedResp);
 
 		if (decodedResp.containsKey('idToken')) {
-			//TODO: salvar el token en el storage
 			return {'ok': true, 'idToken' : decodedResp['idToken']};
 
 		} else {
-			//TODO: Devolver un mensaje de error
-			return {'ok': false, 'message' : decodedResp['message']};
+			return {'ok': false, 'message' : decodedResp['error']['message']};
 		}
 
 	}
