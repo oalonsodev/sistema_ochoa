@@ -12,7 +12,14 @@ class LoginBloc with Validators {
 
   //? Del Button 'login'
   Stream<bool> get formValidStream => CombineLatestStream.combine2(
-      emailStream, passwordStream, (email, password) => true);
+      emailStream, passwordStream, (String email, String password) {
+        if (email.isEmpty || password.isEmpty) {
+          return null;
+        } else {
+          return true;
+        }
+      }
+    );
   
   //* Métodos Get para usar los controladores externamente
   //? Recuperar (o escuchar) datos de los Streams

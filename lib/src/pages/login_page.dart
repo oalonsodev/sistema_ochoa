@@ -6,10 +6,17 @@ import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
 class LoginPage extends StatelessWidget {
   final userProvider = new UserProvider();
 
+  //* Controladores para mantener en los TextFiels el ultimo valor ingresado
+  //* (La otra opciones era quitar el patrón singleton que mantenía el
+  //* último dato ingresado por el usuario)
+  TextEditingController controllerEmail = new TextEditingController();
+  TextEditingController controllerPassword = new TextEditingController();
+
 	@override
 	Widget build(BuildContext context) {
-		//* MediaQuery
-		//? Tamaños de la pantalla del dispositivo
+
+    //* MediaQuery
+    //? Tamaños de la pantalla del dispositivo
 		final size =MediaQuery.of(context).size;
 		
 		return Scaffold(
@@ -66,6 +73,14 @@ class LoginPage extends StatelessWidget {
 	Widget _front(BuildContext context, Size size) {
 		//* Variable que permitirá el uso de las funciones BLOC
 		final bloc = Provider.of(context);
+
+    //* Establecimiento de los últimos valores ingresados para mostrarlos en los
+    //* TextFields al redibujar.
+    controllerEmail.text = bloc.emailValue;
+    controllerPassword.text = bloc.passwordValue;
+
+    print('Al redibujar:\n'
+        'emailValue: ${bloc.emailValue}, passwordValue: ${bloc.passwordValue}');
 
 		final title = Text(
 			'Iniciar sesión',
@@ -143,6 +158,7 @@ class LoginPage extends StatelessWidget {
 
 					child: TextField(
 						keyboardType: TextInputType.emailAddress,
+            controller: controllerEmail,
 						decoration: InputDecoration(
 							icon: Icon(Icons.alternate_email),
 							labelText: 'Correo electrónico',
@@ -176,6 +192,7 @@ class LoginPage extends StatelessWidget {
 					padding: const EdgeInsets.symmetric(horizontal: 16.0),
 					child: TextField(
 						obscureText: true,
+            controller: controllerPassword,
 						decoration: InputDecoration(
 							icon: Icon(Icons.lock),
 							labelText: 'Contraseña',

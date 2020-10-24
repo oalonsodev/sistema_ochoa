@@ -7,6 +7,12 @@ class SignUpPage extends StatelessWidget {
 
   final userProvider = new UserProvider();
 
+  //* Controladores para mantener en los TextFiels el ultimo valor ingresado
+  //* (La otra opciones era quitar el patrón singleton que mantenía el
+  //* último dato ingresado por el usuario)
+  TextEditingController controllerEmail = new TextEditingController();
+  TextEditingController controllerPassword = new TextEditingController();
+
 	@override
 	Widget build(BuildContext context) {
 		//* MediaQuery
