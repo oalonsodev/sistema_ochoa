@@ -18,8 +18,9 @@ class _LoginPageState extends State<LoginPage> {
 
 	final controllerPassword = new TextEditingController();
 
-	//* Variable para controlar la animación de ingreso.
+	//* Variables para controlar la animación de ingreso.
 	bool wasPressed = false;
+  double opacityButtom = 1.0, opacityProgress = 0.0;
 
 	@override
 	Widget build(BuildContext context) {
@@ -181,24 +182,44 @@ class _LoginPageState extends State<LoginPage> {
 			stream: bloc.formValidStream,
 			builder: (BuildContext context, AsyncSnapshot snapshot) {
 				
-				if(wasPressed){
-					return CircularProgressIndicator();
-				}else{
-					return ElevatedButton(
-						child: Text('Iniciar sesión'),
-						style: ButtonStyle(
-							shape: MaterialStateProperty.resolveWith<OutlinedBorder>(getBorderRadius)
-						),
-						onPressed: snapshot.hasData ? () => _login(context, bloc) : null,
-					);
-				}
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+
+            AnimatedOpacity(
+              duration: Duration(milliseconds: 1000),
+              opacity: opacityProgress,
+              child: CircularProgressIndicator()
+            ),
+            
+            AnimatedOpacity(
+              duration: Duration(milliseconds: 300),
+              opacity: opacityButtom,
+              child: ElevatedButton(
+                child: Text('Iniciar sesión'),
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.resolveWith<OutlinedBorder>(getBorderRadius)
+                ),
+                onPressed: snapshot.hasData ? () => _login(context, bloc) : null,
+              ),
+            ),
+
+          ] 
+        );
 
 			},
 		);
 	}
 
 	void _login(BuildContext context, LoginBloc bloc) async {
-		setState(() => wasPressed = true);
+    wasPressed = true;
+
+    if (wasPressed) {
+      setState(() {
+        opacityButtom = 0.0;
+        opacityProgress = 1.0;
+      });
+    }
 		
 		Map<String, dynamic> info =
 				await userProvider.login(bloc.emailValue, bloc.passwordValue);

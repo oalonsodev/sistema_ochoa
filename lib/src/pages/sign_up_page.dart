@@ -20,6 +20,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   //* Variable para controlar la animación de ingreso.
   bool wasPressed = false;
+  double opacityButtom = 1.0, opacityProgress = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -169,23 +170,45 @@ class _SignUpPageState extends State<SignUpPage> {
     return StreamBuilder(
       stream: bloc.formValidStream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (wasPressed) {
-          return CircularProgressIndicator();
-        } else {
-          return ElevatedButton(
-            child: Text('Iniciar sesión'),
-            style: ButtonStyle(
-                shape: MaterialStateProperty.resolveWith<OutlinedBorder>(
-                    getBorderRadius)),
-            onPressed: snapshot.hasData ? () => _signUp(context, bloc) : null,
-          );
-        }
+        
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+
+            AnimatedOpacity(
+              duration: Duration(milliseconds: 1000),
+              opacity: opacityProgress,
+              child: CircularProgressIndicator()
+            ),
+            
+            AnimatedOpacity(
+              duration: Duration(milliseconds: 300),
+              opacity: opacityButtom,
+              child: ElevatedButton(
+                child: Text('Iniciar sesión'),
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.resolveWith<OutlinedBorder>(getBorderRadius)
+                ),
+                onPressed: snapshot.hasData ? () => _signUp(context, bloc) : null,
+              ),
+            ),
+
+          ] 
+        );
+
       },
     );
   }
 
   void _signUp(BuildContext context, LoginBloc bloc) async {
-    setState(() => wasPressed = true);
+    wasPressed = true;
+
+    if (wasPressed) {
+      setState(() {
+        opacityButtom = 0.0;
+        opacityProgress = 1.0;
+      });
+    }
 
     Map<String, dynamic> info =
         await userProvider.newUser(bloc.emailValue, bloc.passwordValue);
