@@ -72,9 +72,6 @@ class _LoginPageState extends State<LoginPage> {
 		controllerEmail.text = bloc.emailValue;
 		controllerPassword.text = bloc.passwordValue;
 
-		print('Al redibujar:\n'
-				'emailValue: ${bloc.emailValue}, passwordValue: ${bloc.passwordValue}');
-
 		final title = Text(
 			'Iniciar sesión',
 			style: TextStyle(fontSize: 20.0),
@@ -87,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
 		);
 
 		return SingleChildScrollView(
-				child: Column(
+			child: Column(
 			children: [
 				SafeArea(child: Container(height: size.height * 0.3)),
 				Card(
@@ -242,4 +239,5 @@ class _LoginPageState extends State<LoginPage> {
 			),
 		);
 	}
+
 }

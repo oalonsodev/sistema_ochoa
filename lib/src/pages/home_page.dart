@@ -4,7 +4,7 @@ import 'package:sistema_ochoa/src/bloc/provider.dart';
 import 'package:sistema_ochoa/src/pages/ajustes_page.dart';
 import 'package:sistema_ochoa/src/pages/catalogo_page.dart';
 import 'package:sistema_ochoa/src/pages/clientes_page.dart';
-import 'package:sistema_ochoa/src/pages/cotizaciones_page.dart';
+import 'package:sistema_ochoa/src/pages/cotizaciones/cotizaciones_page.dart';
 import 'package:sistema_ochoa/src/pages/proveedores_page.dart';
 
 class Home extends StatefulWidget {
@@ -73,7 +73,7 @@ class _HomeState extends State<Home> {
     currentIndex: _currentIndex,
     onTap: (index) {
       //* Cada vez que se preciona una opción, el valor index
-      //* cambia. A su vez, a variable _currentIndex es
+      //* cambia. A su vez, la variable _currentIndex es
       //* igualada a ese valor.
       setState(() {
         _currentIndex = index;
