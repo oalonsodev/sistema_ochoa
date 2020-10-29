@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class HeaderDelegate extends SliverPersistentHeaderDelegate {
+  String dropDownValue = 'No. de folio';
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
@@ -14,12 +15,14 @@ class HeaderDelegate extends SliverPersistentHeaderDelegate {
           children: [
             Text('Buscar mediante:'),
             DropdownButton(
-              value: 'No. de folio',
+              value: dropDownValue,
               items: <String>['No. de folio', 'Fecha de requisición',
               'Fecha de cotización', 'Cliente', 'No. de parte']
               .map((item) 
                 => DropdownMenuItem(child: Text(item), value: item)).toList(),
-              onChanged: (String value){}
+              onChanged: (String value){
+                dropDownValue = value;
+              }
             )
           ],
         ),
