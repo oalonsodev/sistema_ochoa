@@ -32,6 +32,7 @@ class _CotizacionesPageState extends State<CotizacionesPage> {
 	//* ======= /PageOne =======
 	//* ======= PageTwo =======
 		// TODO Variables y propiedades usadas en la segunda página del TabBarView
+  SliverPersistentHeader header;
 
 	//* ======= /PageTwo =======
 
@@ -114,56 +115,42 @@ class _CotizacionesPageState extends State<CotizacionesPage> {
       slivers: <Widget>[
 
         _createHeader(),
-        
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              _createBody()
-            ]
-          )
-        
-        )
+        _createBody()
 
       ],
-      //     child: SliverList(
-		  // 	delegate: SliverChildListDelegate.fixed(<Widget>[
-
-		  // 		_createHeader(),
-
-		  // 		_createBody()
-		  // 	]
-      // ),
-
-		  // ),
-		);
-
-	}
-
-	Widget _createBody() {
-		return SingleChildScrollView(
-			padding: EdgeInsets.all(16.0),
-			child: Container(
-			  child: ListBody(
-			  	children: [
-			  		Container(height: 150.0, color: Colors.amber),
-			  		Container(height: 150.0, color: Colors.black),
-			  		Container(height: 150.0, color: Colors.blue),
-			  		Container(height: 150.0, color: Colors.blueGrey),
-			  		Container(height: 150.0, color: Colors.amber),
-			  		Container(height: 150.0, color: Colors.black),
-			  		Container(height: 150.0, color: Colors.blue),
-			  		Container(height: 150.0, color: Colors.blueGrey),
-			  	],
-			  ),
-			),
-				
 		);
 	}
 
-	SliverPersistentHeader _createHeader() {
+  //? Página 2: Consultar cotizaciones
+	
+  SliverPersistentHeader _createHeader() {
 		return SliverPersistentHeader(
       delegate: HeaderDelegate(),
       pinned: true
+    );
+	}
+
+  Widget _createBody() {
+		return SliverList(
+      delegate: SliverChildListDelegate([
+        SingleChildScrollView(
+          padding: EdgeInsets.all(16.0),
+          child: Container(
+            child: ListBody(
+              children: [
+                Container(height: 150.0, color: Colors.amber),
+                Container(height: 150.0, color: Colors.black),
+                Container(height: 150.0, color: Colors.blue),
+                Container(height: 150.0, color: Colors.blueGrey),
+                Container(height: 150.0, color: Colors.amber),
+                Container(height: 150.0, color: Colors.black),
+                Container(height: 150.0, color: Colors.blue),
+                Container(height: 150.0, color: Colors.blueGrey),
+              ],
+            ),
+          ),
+        )
+      ])
     );
 	}
   
@@ -344,6 +331,6 @@ class _CotizacionesPageState extends State<CotizacionesPage> {
 	}
 
 
-//? Página 2: Consultar cotizaciones
+
 
 }

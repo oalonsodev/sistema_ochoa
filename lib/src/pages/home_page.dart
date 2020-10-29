@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:sistema_ochoa/src/bloc/provider.dart';
 import 'package:sistema_ochoa/src/pages/ajustes_page.dart';
 import 'package:sistema_ochoa/src/pages/catalogo_page.dart';
 import 'package:sistema_ochoa/src/pages/clientes_page.dart';
@@ -21,8 +20,6 @@ class _HomeState extends State<Home> {
 	@override
 	Widget build(BuildContext context) {
 		
-    final bloc = Provider.of(context);
-
     return DefaultTabController(
       length: 2,
 		  child: Scaffold(
