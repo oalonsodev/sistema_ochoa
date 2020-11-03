@@ -3,24 +3,24 @@ import 'package:flutter/material.dart';
 class HeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      color: Theme.of(context).canvasColor,
-      child: Container(
-        child: TextField(
-          decoration: InputDecoration(
-            labelText: 'Buscar'
-          ),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: TextField(
+        decoration: InputDecoration(
+          labelText: 'Buscar',
+          border: OutlineInputBorder()
         ),
       ),
     );
   }
 
   @override
-  double get maxExtent => 100.0;
+  //* Este número debe ser menor o igual a la altura del widget dibujado en el build
+  double get maxExtent => 91.0;
 
   @override
-  double get minExtent => 100.0;
+  //* Este número debe ser menor o igual a la altura del widget dibujado en el build
+  double get minExtent => 91.0;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
