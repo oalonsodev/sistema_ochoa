@@ -102,27 +102,28 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 
 	//? Página 2: Consultar cotizaciones
 	SliverPersistentHeader _createHeader() {
-		print('Header creado');
 		return SliverPersistentHeader(
-				// 'No. de folio', 'Fecha de requisición',
-				// 'Fecha de cotización', 'Cliente', 'No. de parte'
-				delegate: HeaderDelegate(
-						dropDownValue: _dropDownValuePage2, updateValue: _updateText),
-				pinned: true);
+			delegate: HeaderDelegate(dropDownValue: _dropDownValuePage2, updateValue: _updateText),
+			pinned: true
+		);
 	}
 
-	Widget _createBody() {
+	SliverFillRemaining _createBody() {
 		// TODO: Crear FTBuilder que muestre la lista de resultados,
 		// todo: y poner este widget como initialData.
 		return SliverFillRemaining( //* Widget que extiende a su hijo en el area visible restante de la pantalla
-      hasScrollBody: false,
-      child: Center(
-        child: Text(
-          'No hay búsquedas recientes',
-          style: Theme.of(context).textTheme.subtitle2
-        )
-      ),
-    );
+			hasScrollBody: false,
+			child: Column(
+				mainAxisAlignment: MainAxisAlignment.center,
+				children: [
+					Icon(Icons.search_off, size: 200.0, color: Colors.grey),
+					Text(
+						'No hay búsquedas recientes',
+						style: Theme.of(context).textTheme.subtitle2
+					),
+				],
+			),
+		);
 		
 		
 		// return SliverList(

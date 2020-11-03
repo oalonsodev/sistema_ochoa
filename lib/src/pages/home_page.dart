@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:sistema_ochoa/src/pages/ajustes_page.dart';
 import 'package:sistema_ochoa/src/pages/catalogo/catalogo_page.dart';
-import 'package:sistema_ochoa/src/pages/clientes_page.dart';
+import 'package:sistema_ochoa/src/pages/clientes/clientes_page.dart';
 import 'package:sistema_ochoa/src/pages/cotizaciones/cotizaciones_page.dart';
 import 'package:sistema_ochoa/src/pages/proveedores_page.dart';
 

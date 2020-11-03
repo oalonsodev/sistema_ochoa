@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:sistema_ochoa/src/pages/catalogo/header_delegate.dart';
 
 class CatalogoPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class _CatalogoPageState extends State<CatalogoPage> {
 		);
 	}
 
-	_createBody() {
+	SliverFillRemaining _createBody() {
 		// TODO: Crear FTBuilder que muestre la lista de resultados,
 		// todo: y poner este widget como initialData.
 		return SliverFillRemaining( //* Widget que extiende a su hijo en el area visible restante de la pantalla
