@@ -95,60 +95,8 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 
 	Widget _pageTwo() {
 		return CustomScrollView(
-
 			slivers: <Widget>[_createHeader(), _createBody()],
 		);
-	}
-
-	//? Página 2: Consultar cotizaciones
-	SliverPersistentHeader _createHeader() {
-		return SliverPersistentHeader(
-			delegate: HeaderDelegate(dropDownValue: _dropDownValuePage2, updateValue: _updateText),
-			pinned: true
-		);
-	}
-
-	SliverFillRemaining _createBody() {
-		// TODO: Crear FTBuilder que muestre la lista de resultados,
-		// todo: y poner este widget como initialData.
-		return SliverFillRemaining( //* Widget que extiende a su hijo en el area visible restante de la pantalla
-			hasScrollBody: false,
-			child: Column(
-				mainAxisAlignment: MainAxisAlignment.center,
-				children: [
-					Icon(Icons.search_off, size: 200.0, color: Colors.grey),
-					Text(
-						'No hay búsquedas recientes',
-						style: Theme.of(context).textTheme.subtitle2
-					),
-				],
-			),
-		);
-		
-		
-		// return SliverList(
-		// 	delegate: SliverChildListDelegate([
-		//     SingleChildScrollView(
-					
-		//       padding: EdgeInsets.all(16.0),
-		//       child: Container(
-		//         color: Colors.blue,
-		//         alignment: Alignment.bottomCenter,
-		//         child: Text(
-		//           'No hay búsquedas recientes',
-		//           style: Theme.of(context).textTheme.subtitle2,
-		//         ),
-		//       ),
-		//     )
-		//   ])
-		// );
-	}
-
-	//* Utilidades
-	void _updateText(String value) {
-		setState(() {
-			_dropDownValuePage2 = value;
-		});
 	}
 
 	//? Página 1: "Nueva cotización"
@@ -298,4 +246,48 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			});
 		}
 	}
+
+  //? Página 2: Consultar cotizaciones
+	SliverPersistentHeader _createHeader() {
+		return SliverPersistentHeader(
+			delegate: HeaderDelegate(
+        dropDownValue: _dropDownValuePage2,
+        updateValue: _updateText
+      ),
+			pinned: true
+		);
+	}
+
+	SliverFillRemaining _createBody() {
+		// TODO: Crear FTBuilder que muestre la lista de resultados,
+		// todo: y poner este widget como initialData.
+		return SliverFillRemaining( //* Widget que extiende a su hijo en el area visible restante de la pantalla
+			hasScrollBody: false,
+			child: Column(
+				mainAxisAlignment: MainAxisAlignment.center,
+				children: [
+					Icon(Icons.search_off, size: 200.0, color: Colors.grey),
+					Text(
+						'No hay búsquedas recientes',
+						style: Theme.of(context).textTheme.subtitle2
+					),
+				],
+			),
+		);
+		
+		// TODO: Esto es lo que podría ir dentro del FTBuilder
+		// return SliverList(
+		// 	delegate: SliverChildListDelegate([
+		//     SingleChildScrollView()
+		//   ])
+		// );
+	}
+
+	//* Utilidades
+	void _updateText(String value) {
+		setState(() {
+			_dropDownValuePage2 = value;
+		});
+	}
+
 }

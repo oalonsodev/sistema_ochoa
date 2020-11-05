@@ -12,10 +12,9 @@ class _ClientesPageState extends State<ClientesPage> {
 	@override
 	Widget build(BuildContext context) {
 		return CustomScrollView(
-			//TODO: Resolver: Al colocar ambos métodos juntos, ninguno se dibuja.
 			slivers: <Widget>[
 				_createHeader(),
-				_createBody()
+				_createBody(context)
 			],
 		);
 	}
@@ -27,8 +26,10 @@ class _ClientesPageState extends State<ClientesPage> {
 		);
 	}
 
-	SliverFillRemaining _createBody() {
-		return SliverFillRemaining(
+	SliverFillRemaining _createBody(BuildContext context) {
+		// TODO: Crear FTBuilder que muestre la lista de resultados,
+		// todo: y poner este widget como initialData.
+    return SliverFillRemaining(
 			hasScrollBody: false,
 			child: Column(
 				mainAxisAlignment: MainAxisAlignment.center,

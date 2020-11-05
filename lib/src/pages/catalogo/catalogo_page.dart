@@ -39,8 +39,15 @@ class _CatalogoPageState extends State<CatalogoPage> {
 		// todo: y poner este widget como initialData.
 		return SliverFillRemaining( //* Widget que extiende a su hijo en el area visible restante de la pantalla
 			hasScrollBody: false,
-			child: Center(
-				child: Icon(Icons.search, size: 200.0, color: Colors.grey,)
+			child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+			  children: [
+			    Icon(Icons.search_off, size: 200.0, color: Colors.grey,),
+          Text(
+						'No hay búsquedas recientes',
+						style: Theme.of(context).textTheme.subtitle2
+					),
+			  ],
 			),
 		);
 	}

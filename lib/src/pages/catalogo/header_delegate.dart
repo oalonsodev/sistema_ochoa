@@ -47,9 +47,11 @@ class HeaderDelegate extends SliverPersistentHeaderDelegate {
 	}
 
 	@override
+  //* Este número debe ser menor o igual a la altura del widget dibujado en el build
 	double get maxExtent => 200.0;
 
 	@override
+  //* Este número debe ser menor o igual a la altura del widget dibujado en el build
 	double get minExtent => 200.0;
 
 	@override
