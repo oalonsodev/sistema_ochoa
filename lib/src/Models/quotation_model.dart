@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
-ProductModel productModelFromJson(String str) => ProductModel.fromJson(json.decode(str));
+QuotationModel productModelFromJson(String str) => QuotationModel.fromJson(json.decode(str));
 
-String productModelToJson(ProductModel data) => json.encode(data.toJson());
+String productModelToJson(QuotationModel data) => json.encode(data.toJson());
 
-class ProductModel {
-	ProductModel({
+class QuotationModel {
+	QuotationModel({
 		this.id,
 		this.fecha,
 		this.folio,
@@ -34,7 +34,7 @@ class ProductModel {
 	String condicionesVenta;
 	String tiempoEntrega;
 
-	factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
+	factory QuotationModel.fromJson(Map<String, dynamic> json) => QuotationModel(
 		id								: json["id"],
 		fecha							: json["fecha"],
 		folio							: json["folio"],

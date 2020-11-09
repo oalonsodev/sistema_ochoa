@@ -54,6 +54,18 @@ void showError(BuildContext context, String mensaje) {
 }
 
 //? Utilidades de CotizacionesPage
+Widget createLabelDivider(BuildContext context, String label) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(label),
+      Divider(thickness: 1.0, color: Theme.of(context).primaryColor)
+    ],
+  );
+}
+
+Widget createSpace(double height) => SizedBox(height: height);
+
 bool isToday(String date) {
 	var currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
 
@@ -67,7 +79,7 @@ String formFieldIsEmpty(String value) {
 	return (value.isEmpty) ? "Rellene este campo" : null;
 }
 
-String formFielIsNumeric(String value) {
+String formFieldIsNumeric(String value) {
 	final number = num.tryParse(value);
 
 	return (number == null) ? "Ingrese solo números" : null;

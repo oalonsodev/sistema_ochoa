@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:sistema_ochoa/src/pages/cotizaciones/header_delegate.dart';
 import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
 
-import 'package:sistema_ochoa/src/providers/products_provider.dart';
-import 'package:sistema_ochoa/src/Models/ProductModel.dart';
+import 'package:sistema_ochoa/src/providers/quotation_provider.dart';
+import 'package:sistema_ochoa/src/Models/quotation_model.dart';
 
 class CotizacionesPage extends StatefulWidget {
 	@override
@@ -13,13 +13,14 @@ class CotizacionesPage extends StatefulWidget {
 }
 
 class CotizacionesPageState extends State<CotizacionesPage> {
-	GlobalKey<FormState> formKey; //* Key del Widget Form
-	ProductModel product; //* Modelo de producto
-	ProductsProvider productProvider; //* Proveedor de métodos para los procesos REST de productos
+	GlobalKey<FormState> _formKey; //* Key del Widget Form
+	QuotationModel _quotation; //* Modelo de producto
+	QuotationProvider _quotationProvider; //* Proveedor de métodos para los procesos REST de productos
 	
 	//* ======= PageOne =======
 	//? Valores del formulario
-	String _dropDownValuePage1;
+	String _condicionVentaSelec;
+	List<String> _condicionesV;
 	//? Controladores
 	TextEditingController _controllerDatePicker;
 
@@ -28,13 +29,19 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 
 	@override
 	void initState() {
-		formKey               = new GlobalKey<FormState>();
-		product               = new ProductModel();
-		productProvider 			= new ProductsProvider();
-		_dropDownValuePage1 	= 'Condiciones de venta';
-		_controllerDatePicker = new TextEditingController();
-		_dropDownValuePage2 		= 'No. de folio';
 		super.initState();
+		_formKey							= new GlobalKey<FormState>();
+		_quotation						= new QuotationModel();
+		_quotationProvider		= new QuotationProvider();
+		_condicionVentaSelec	= 'Condiciones de venta';
+		_condicionesV = [
+			'Condiciones de venta',
+			'De contado',
+			'A crédito',
+			'50% de contado, 50% a crédito'
+		];
+		_controllerDatePicker	= new TextEditingController();
+		_dropDownValuePage2		= 'No. de folio';
 	}
 
 	@override
@@ -49,8 +56,8 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 		//* asignaciones hechas desde el DatePicker.
 		//! SI coloco el valor directamente en product.fecha pues es un valor que
 		//! viene predefinido con la fecha actual en todas las cotizaciones.
-		if ( utils.isToday(product.fecha) )
-			_controllerDatePicker.text = product.fecha;
+		if ( utils.isToday(_quotation.fecha) )
+			_controllerDatePicker.text = _quotation.fecha;
 
 		return TabBarView(children: [
 			_pageOne(context),
@@ -62,30 +69,30 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 		return SingleChildScrollView(
 			padding: EdgeInsets.all(16.0),
 			child: Form(
-				key: formKey,
+				key: _formKey,
 				child: Column(
 					children: [
-						_createLabelDivider('Datos de cotización'),
+						utils.createLabelDivider(context, 'Datos de cotización'),
 						_createTFFDatePicker(context),
-						_createSpace(16.0),
+						utils.createSpace(16.0),
 						_createTFFFolio(),
-						_createSpace(16.0),
+						utils.createSpace(16.0),
 						_createTFFNoReq(),
-						_createSpace(24.0),
-						_createLabelDivider('Datos del cliente'),
+						utils.createSpace(24.0),
+						utils.createLabelDivider(context, 'Datos del cliente'),
 						_createTFFCliente(),
-						_createSpace(16.0),
+						utils.createSpace(16.0),
 						_createTFFDireccion(),
-						_createSpace(16.0),
+						utils.createSpace(16.0),
 						_createTFFComprador(),
-						_createSpace(16.0),
+						utils.createSpace(16.0),
 						_createTFFDepartamento(),
-						_createSpace(24.0),
-						_createLabelDivider('Otros datos'),
+						utils.createSpace(24.0),
+						utils.createLabelDivider(context, 'Otros datos'),
 						_createDBFFCondicionesV(),
-						_createSpace(16.0),
+						utils.createSpace(16.0),
 						_createTFFTiempoE(),
-						_createSpace(24.0),
+						utils.createSpace(24.0),
 						_createButton()
 					],
 				),
@@ -107,7 +114,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 					labelText: 'Fecha de solicitud', border: OutlineInputBorder()),
 			onTap: () => _createDatePicker(context),
 			validator: (value) => utils.formFieldIsEmpty(value),
-			onSaved: (value) => product.fecha = value,
+			onSaved: (value) => _quotation.fecha = value,
 		);
 	}
 
@@ -116,7 +123,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			decoration: InputDecoration(
 					labelText: 'Folio de la cotización', border: OutlineInputBorder()),
 			validator: (value) => utils.formFieldIsEmpty(value),
-			onSaved: (value) => product.folio = value,
+			onSaved: (value) => _quotation.folio = value,
 		);
 	}
 
@@ -124,8 +131,8 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 		return TextFormField(
 			decoration: InputDecoration(
 					labelText: 'No. de requisición', border: OutlineInputBorder()),
-			validator: (value) => utils.formFielIsNumeric(value),
-			onSaved: (value) => product.noReq = num.parse(value),
+			validator: (value) => utils.formFieldIsNumeric(value),
+			onSaved: (value) => _quotation.noReq = num.parse(value),
 		);
 	}
 
@@ -134,7 +141,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			decoration:
 					InputDecoration(labelText: 'Cliente', border: OutlineInputBorder()),
 			validator: (value) => utils.formFieldIsEmpty(value),
-			onSaved: (value) => product.cliente = value,
+			onSaved: (value) => _quotation.cliente = value,
 		);
 	}
 
@@ -143,7 +150,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			decoration:
 					InputDecoration(labelText: 'Dirección', border: OutlineInputBorder()),
 			validator: (value) => utils.formFieldIsEmpty(value),
-			onSaved: (value) => product.direccion = value,
+			onSaved: (value) => _quotation.direccion = value,
 		);
 	}
 
@@ -152,7 +159,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			decoration:
 					InputDecoration(labelText: 'Comprador', border: OutlineInputBorder()),
 			validator: (value) => utils.formFieldIsEmpty(value),
-			onSaved: (value) => product.comprador = value,
+			onSaved: (value) => _quotation.comprador = value,
 		);
 	}
 
@@ -161,24 +168,22 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			decoration: InputDecoration(
 					labelText: 'Departamento', border: OutlineInputBorder()),
 			validator: (value) => utils.formFieldIsEmpty(value),
-			onSaved: (value) => product.departamento = value,
+			onSaved: (value) => _quotation.departamento = value,
 		);
 	}
 
 	Widget _createDBFFCondicionesV() {
 		return DropdownButtonFormField<String>(
-			value: _dropDownValuePage1,
-			onChanged: (optSelect) => setState(() => _dropDownValuePage1 = optSelect),
-			items: <String>[
-				'Condiciones de venta',
-				'De contado',
-				'A crédito',
-				'50% de contado, 50% a crédito'
-				]
-				.map((String opt) => DropdownMenuItem(child: Text(opt), value: opt))
+			decoration: InputDecoration(
+				border: OutlineInputBorder()
+			),
+			value: _condicionVentaSelec,
+			items: _condicionesV.map(
+				(String opt) => DropdownMenuItem(child: Text(opt), value: opt))
 				.toList(),
+			onChanged: (optSelec) => setState(() => _condicionVentaSelec = optSelec),
 			validator: (value) => utils.dropDownIsValid(value),
-			onSaved: (value) => product.condicionesVenta = value,
+			onSaved: (value) => _quotation.condicionesVenta = value,
 		);
 	}
 
@@ -188,7 +193,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 				labelText: 'Tiempo de entrega', border: OutlineInputBorder()
 			),
 			validator: (value) => utils.formFieldIsEmpty(value),
-			onSaved: (value) => product.tiempoEntrega = value,
+			onSaved: (value) => _quotation.tiempoEntrega = value,
 		);
 	}
 
@@ -196,32 +201,23 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 		return Align(
 			alignment: Alignment.centerRight,
 			child: TextButton(
-					child: Text('Siguiente'),
-					onPressed: () {
-						//* Si hay algun error, no se ejecutan las lineas despues de esta
-						//* condición. Es decir que no se guardan los datos del formulario.
-						if (!formKey.currentState.validate()) return;
+				child: Text('Siguiente'),
+				onPressed: () {
+					//* Si hay algun error, no se ejecutan las lineas despues de esta
+					//* condición. Es decir que no se guardan los datos del formulario.
+					if (!_formKey.currentState.validate()) return;
 
-						formKey.currentState.save();
-						print(product.toJson());
+					//* Ejecutar la propiedad 'save' de los elementos del formulario.
+					_formKey.currentState.save();
+					//? mostrar en consola los datos de la cotización _
+					print(_quotation.toJson());
 
-						productProvider.crearProducto(product);
-					}),
+					//* Publicar en FireBase la cotización creada.
+					_quotationProvider.crearProducto(_quotation);
+				}
+			),
 		);
 	}
-
-	//* utilidades
-	Widget _createLabelDivider(String label) {
-		return Column(
-			crossAxisAlignment: CrossAxisAlignment.start,
-			children: [
-				Text(label),
-				Divider(thickness: 1.0, color: Theme.of(context).primaryColor)
-			],
-		);
-	}
-
-	Widget _createSpace(double height) => SizedBox(height: height);
 
 	void _createDatePicker(BuildContext context) async {
 		//* Hacer que el TextFormField no tome el foco
@@ -229,31 +225,32 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 
 		//* Ejecutar el DatePicker
 		DateTime date = await showDatePicker(
-				context: context,
-				initialDate: DateTime.now(),
-				firstDate: DateTime(2018),
-				lastDate: DateTime(2021));
+			context: context,
+			initialDate: DateTime.now(),
+			firstDate: DateTime(2018),
+			lastDate: DateTime(2021)
+		);
 
 		//* Asignar la fecha seleccionada en el DatePicker al TextFormField
 		if (date != null) {
 			setState(() {
 				//? Darle formato de dia/mes/año a la fecha obtenida del DatePicker
 				//? y actualizar el valor de fecha en el producto.
-				product.fecha = DateFormat('dd/MM/yyyy').format(date);
+				_quotation.fecha = DateFormat('dd/MM/yyyy').format(date);
 
 				//? Asignar el valor al controlador del TextFormField
-				_controllerDatePicker.text = product.fecha;
+				_controllerDatePicker.text = _quotation.fecha;
 			});
 		}
 	}
 
-  //? Página 2: Consultar cotizaciones
+	//? Página 2: Consultar cotizaciones
 	SliverPersistentHeader _createHeader() {
 		return SliverPersistentHeader(
 			delegate: HeaderDelegate(
-        dropDownValue: _dropDownValuePage2,
-        updateValue: _updateText
-      ),
+				dropDownValue: _dropDownValuePage2,
+				updateValue: _updateText
+			),
 			pinned: true
 		);
 	}

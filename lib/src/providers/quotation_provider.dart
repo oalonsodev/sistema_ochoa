@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'package:sistema_ochoa/src/Models/ProductModel.dart';
+import 'package:sistema_ochoa/src/Models/quotation_model.dart';
 
-class ProductsProvider {
+class QuotationProvider {
   final String _url = 'https://proyectoochoasc.firebaseio.com';
 
-  Future<bool> crearProducto(ProductModel product) async {
+  Future<bool> crearProducto(QuotationModel product) async {
     final url = '$_url/productos.json';
 
     final resp = await http.post(url, body: productModelToJson(product));
@@ -18,8 +18,8 @@ class ProductsProvider {
     return true;
   }
 
-  Future<List<ProductModel>> obtenerProducto() async {
-    List<ProductModel> productList = new List<ProductModel>();
+  Future<List<QuotationModel>> obtenerProducto() async {
+    List<QuotationModel> quotationList = new List<QuotationModel>();
 
     final url = '$_url/productos.json';
 
