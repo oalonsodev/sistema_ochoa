@@ -4,31 +4,30 @@ import 'package:http/http.dart' as http;
 import 'package:sistema_ochoa/src/Models/quotation_model.dart';
 
 class QuotationProvider {
-  final String _url = 'https://proyectoochoasc.firebaseio.com';
+	final String _url = 'https://proyectoochoasc.firebaseio.com';
+	String id;
 
-  Future<bool> crearProducto(QuotationModel product) async {
-    final url = '$_url/productos.json';
+	Future<String> createQuotation(QuotationModel quotation) async {
+		final url = '$_url/quotation.json';
+		final resp = await http.post(url, body: quotationModelToJson(quotation));
+		final decodedData = json.decode(resp.body);
 
-    final resp = await http.post(url, body: productModelToJson(product));
+		id = decodedData['name'];
 
-    final decodedData = json.decode(resp.body);
+		return id;
+	}
 
-    print(decodedData);
+	Future<List<QuotationModel>> getQuotations() async {
+		List<QuotationModel> quotationList = new List<QuotationModel>();
 
-    return true;
-  }
+		final url = '$_url/quotation.json';
 
-  Future<List<QuotationModel>> obtenerProducto() async {
-    List<QuotationModel> quotationList = new List<QuotationModel>();
+		final resp = await http.get(url);
 
-    final url = '$_url/productos.json';
+		final decodedData = json.decode(resp.body);
 
-    final resp = await http.get(url);
+		print(decodedData);
 
-    final decodedData = json.decode(resp.body);
-
-    print(decodedData);
-
-    return [];
-  }
+		return [];
+	}
 }

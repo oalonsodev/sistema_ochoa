@@ -93,7 +93,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 						utils.createSpace(16.0),
 						_createTFFTiempoE(),
 						utils.createSpace(24.0),
-						_createButton()
+						_createButton(context)
 					],
 				),
 			),
@@ -197,23 +197,27 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 		);
 	}
 
-	Align _createButton() {
+	Align _createButton(BuildContext context) {
 		return Align(
 			alignment: Alignment.centerRight,
 			child: TextButton(
 				child: Text('Siguiente'),
-				onPressed: () {
+				onPressed: () async {
 					//* Si hay algun error, no se ejecutan las lineas despues de esta
 					//* condición. Es decir que no se guardan los datos del formulario.
 					if (!_formKey.currentState.validate()) return;
 
 					//* Ejecutar la propiedad 'save' de los elementos del formulario.
 					_formKey.currentState.save();
-					//? mostrar en consola los datos de la cotización _
+					//? mostrar en consola los datos de la cotización recien creada.
 					print(_quotation.toJson());
 
-					//* Publicar en FireBase la cotización creada.
-					_quotationProvider.crearProducto(_quotation);
+					//* Publicar en FireBase la cotización creada y
+          //* asignar el ID a la cotización.
+					_quotation.id = await _quotationProvider.createQuotation(_quotation);
+
+					//* Dirigir a la pantalla para agregar productos a la cotización.
+					Navigator.pushNamed(context, 'addProd', arguments: _quotation.id);
 				}
 			),
 		);
@@ -258,7 +262,8 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 	SliverFillRemaining _createBody() {
 		// TODO: Crear FTBuilder que muestre la lista de resultados,
 		// todo: y poner este widget como initialData.
-		return SliverFillRemaining( //* Widget que extiende a su hijo en el area visible restante de la pantalla
+		//* Widget que extiende a su hijo en el area visible restante de la pantalla
+		return SliverFillRemaining(
 			hasScrollBody: false,
 			child: Column(
 				mainAxisAlignment: MainAxisAlignment.center,

@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:intl/intl.dart';
 
-QuotationModel productModelFromJson(String str) => QuotationModel.fromJson(json.decode(str));
+QuotationModel quotationModelFromJson(String str) => QuotationModel.fromJson(json.decode(str));
 
-String productModelToJson(QuotationModel data) => json.encode(data.toJson());
+String quotationModelToJson(QuotationModel data) => json.encode(data.toJson());
 
 class QuotationModel {
 	QuotationModel({
@@ -17,14 +17,15 @@ class QuotationModel {
 		this.departamento,
 		this.condicionesVenta,
 		this.tiempoEntrega,
+		this.productos
 	}){
 
-    fecha = DateFormat('dd/MM/yyyy').format(DateTime.now());
-  
-  }
+		fecha = DateFormat('dd/MM/yyyy').format(DateTime.now());
+	
+	}
 
 	String id;
-  String fecha;
+	String fecha;
 	String folio;
 	int noReq;
 	String cliente;
@@ -33,6 +34,7 @@ class QuotationModel {
 	String departamento;
 	String condicionesVenta;
 	String tiempoEntrega;
+	List<String> productos;
 
 	factory QuotationModel.fromJson(Map<String, dynamic> json) => QuotationModel(
 		id								: json["id"],
@@ -45,6 +47,7 @@ class QuotationModel {
 		departamento			: json["departamento"],
 		condicionesVenta	: json["condicionesVenta"],
 		tiempoEntrega			: json["tiempoEntrega"],
+		productos         : json["productos"]
 	);
 
 	Map<String, dynamic> toJson() => {
@@ -58,5 +61,6 @@ class QuotationModel {
 		"departamento"			: departamento,
 		"condicionesVenta"	: condicionesVenta,
 		"tiempoEntrega"		  : tiempoEntrega,
+		"productos"					: productos
 	};
 }
