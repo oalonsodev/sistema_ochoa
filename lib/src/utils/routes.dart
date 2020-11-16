@@ -12,6 +12,6 @@ Map<String, WidgetBuilder> getRoutes() {
 		'login' 	: (BuildContext context) => LoginPage(),
 		'signup'	: (BuildContext context) => SignUpPage(),
 		'home'  	: (BuildContext context) => Home(),
-		'addProd'	: (BuildContext context) => ProductosCot(),
+		'addProd'	: (BuildContext context) => ProductosCotPage(),
 	};
 }
