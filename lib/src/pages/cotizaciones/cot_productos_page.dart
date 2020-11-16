@@ -26,6 +26,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 	//? ======= TabBar =======
 	TabController _tabController; //* Controlador del TabBar.
 	int _currentTab; //* Índice del tab seleccionado.
+	bool _isProductAdded; //* Indica si el build se redibuja por adición de producto.
 	
 	//? ======= FloatingActionButton =======
 	Widget _moreOptions; //* Botón de eliminación opcional
@@ -40,12 +41,13 @@ class _ProductosCotState extends State<ProductosCotPage>
 	void initState() {
 		// TODO: implement initState
 		super.initState();
-		_currentTab   = 0; //* Indice indicador del tab inicial
-		_productList  = [new ProductModel()]; //* Lista inical de productos.
-		_unidadSelec  = 'Unidad'; //* Valor inicial del menú 'Unidad'.
-		_unidad       = List.unmodifiable(['Unidad','Pieza','Servicio','Ml.','Kl.','L.']) ; //* Lista de uni.
-		_monedaSelec  = 'USD';
-		_moneda       = List.unmodifiable(['USD','MX']); //* Lista de monedas
+		_currentTab   	= 0; //* Indice indicador del tab inicial
+		_isProductAdded	= false; //* Indica si el build se redibuja por adición de producto.
+		_productList  	= [new ProductModel()]; //* Lista inical de productos.
+		_unidadSelec  	= 'Unidad'; //* Valor inicial del menú 'Unidad'.
+		_unidad       	= List.unmodifiable(['Unidad','Pieza','Servicio','Ml.','Kl.','L.']) ; //* Lista de uni.
+		_monedaSelec  	= 'USD';
+		_moneda       	= List.unmodifiable(['USD','MX']); //* Lista de monedas
 	}
 
 	@override
@@ -70,23 +72,21 @@ class _ProductosCotState extends State<ProductosCotPage>
 		//*		Al crear un nuevo Tab, _currentTab toma el valor de
 		//*		_productList.length-1 para que, posteriormente a la ejecución de
 		//*		build(), _tabController.index tome el valor de _currentTab.
-		_tabController.index = _currentTab;
+		if (_isProductAdded) {
+			_tabController.index = _currentTab; //! Problema aqui al borrar producto
+		}
+		_isProductAdded = false; //* Establece a _isProductAdded como falso.
 		//? 	2. Cada que se navega entre tabs.
-					//TODO: Crear y describir esta implementación.
+		//*		_tabController.index toma automáticamente el valor del Tab visualizado.
 
 
-		//TODO: Resolver el problema de que el último TabBarView no toma el foco
-			// _tabController.index = _productList.length-1;
-		
-		// _tabController.index = _currentTab;
-		// _currentTab = _tabController.index; //* Índice del tab seleccionado.
-
+		//? Este es el código que mueve el foco al último tab creado.
 		_tabController.animateTo(
-			_productList.length-1, //* _tabController.index tomará este valor
+			_productList.length-1, //* _tabController.index tomará este valor.
 			duration: Duration(milliseconds: 5000),
 			curve: Curves.decelerate
 		);
-		_currentTab = _tabController.index;
+		_currentTab = _tabController.index; //* Almacenamos el valor index actual. 
 
 
 		//* Recepción del Id de la cotización que se está creando.
@@ -136,25 +136,19 @@ class _ProductosCotState extends State<ProductosCotPage>
 					child: Icon(Icons.add),
 					onPressed: () {
 						setState(() {
-							//? Agregar producto a la lista.
-							_productList.add(new ProductModel());
-							//? La lista de Tabs aumenta en base a la lista de productos.
-							print('previousIndex: ${_tabController.previousIndex}');
-							print('Current Tab: $_currentTab');
-							print('se agregó un elemento a la lista');
-							print('La lista actual: $_productList');
-							print('Nueva longitud de la lista: ${_productList.length}');
-
-							//TODO: Usar este método para colocar el foco en el último tab
-							//todo: creado.
-							//* Lineas encargadas de realizar el cambio entre pestañas
-							_tabController.animateTo(
-								_productList.length-2, //* _tabController.index tomará este valor
-								duration: Duration(milliseconds: 5000),
-								curve: Curves.decelerate
-							);
-							_currentTab = _tabController.index;
+							_addProduct();
 						});
+
+						// //TODO: Usar este método para colocar el foco en el último tab
+						// //todo: creado.
+						// //* Lineas encargadas de realizar el cambio entre pestañas
+						// _tabController.animateTo(
+						// 	_productList.length-1, //* _tabController.index tomará este valor
+						// 	duration: Duration(milliseconds: 5000),
+						// 	curve: Curves.decelerate
+						// );
+						// //* Para este momento _tabController.index ya cambió de valor.
+						// _currentTab = _tabController.index;
 					},
 				),
 				_moreOptions
@@ -168,6 +162,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 				child: Text('Cancelar'),
 				onPressed: () {
 				 print('Tab actual: ${_tabController.index}');
+				 print('Tab actual: $_currentTab');
 				 print('La lista actual: $_productList');
 				 print('Longitud de la lista: ${_productList.length}');
 			}),
@@ -203,6 +198,21 @@ class _ProductosCotState extends State<ProductosCotPage>
 		);
 	}
 
+	void _addProduct() { //? Agregar producto a la lista.
+		_isProductAdded = true;
+
+		_productList.add(new ProductModel());
+		//? La lista de Tabs aumenta en base a la lista de productos.
+		print('previousIndex: ${_tabController.previousIndex}');
+		print('Index: ${_tabController.index}');
+		print('Current Tab: $_currentTab');
+		print('se agregó un elemento a la lista');
+		print('La lista actual: $_productList');
+		print('Nueva longitud de la lista: ${_productList.length}');
+
+		
+	}
+	
 	void _removeProduct() {
 		//? Remover de la lista el producto visible en pantalla
 		// int _nextIndex;
@@ -217,13 +227,13 @@ class _ProductosCotState extends State<ProductosCotPage>
 		print('La lista actual: $_productList');
 		print('Nueva longitud de la lista: ${_productList.length}');
 
-		//* Lineas encargadas de realizar el cambio entre pestañas
-		_tabController.animateTo(
-			_tabController.index, //* _tabController.index tomará este valor
-			duration: Duration(milliseconds: 5000),
-			curve: Curves.decelerate
-		);
-		_currentTab = _tabController.index;
+		// //* Lineas encargadas de realizar el cambio entre pestañas
+		// _tabController.animateTo(
+		// 	_productList.length-1, //* _tabController.index tomará este valor
+		// 	duration: Duration(milliseconds: 5000),
+		// 	curve: Curves.decelerate
+		// );
+		// _currentTab = _tabController.index;
 
 	}
 
