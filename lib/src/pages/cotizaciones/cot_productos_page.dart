@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sistema_ochoa/provider/product_list_provider.dart';
+
 import 'package:sistema_ochoa/src/Models/product_model.dart';
 import 'package:sistema_ochoa/src/pages/productos/product_form.dart';
 
@@ -21,12 +24,12 @@ class ProductosCotPage extends StatefulWidget {
 
 class _ProductosCotState extends State<ProductosCotPage>
 		with TickerProviderStateMixin {
-	List<ProductModel> _productList; //* Lista de productos.
+	ProductListProvider _productList; //* Lista de productos.
 
 	//? ======= TabBar =======
 	TabController _tabController; //* Controlador del TabBar.
 	int _currentTab; //* Índice del tab seleccionado.
-	bool _isProductAdded; //* Indica si el build se redibuja por adición de producto.
+	bool _productWasAdded; //* Indica si el build se redibuja por adición de producto.
 	
 	//? ======= FloatingActionButton =======
 	Widget _moreOptions; //* Botón de eliminación opcional
@@ -42,8 +45,8 @@ class _ProductosCotState extends State<ProductosCotPage>
 		// TODO: implement initState
 		super.initState();
 		_currentTab   	= 0; //* Indice indicador del tab inicial
-		_isProductAdded	= false; //* Indica si el build se redibuja por adición de producto.
-		_productList  	= [new ProductModel()]; //* Lista inical de productos.
+		_productWasAdded	= false; //* Indica si el build se redibuja por adición de producto.
+		// _productList  	= [new ProductModel()]; //* Lista inical de productos.
 		_unidadSelec  	= 'Unidad'; //* Valor inicial del menú 'Unidad'.
 		_unidad       	= List.unmodifiable(['Unidad','Pieza','Servicio','Ml.','Kl.','L.']) ; //* Lista de uni.
 		_monedaSelec  	= 'USD';
@@ -59,45 +62,46 @@ class _ProductosCotState extends State<ProductosCotPage>
 
 	@override
 	Widget build(BuildContext context) {
+		_productList = Provider.of(context);
+
 		//* La definición del controlador se lleva a cabo aquí para poder
 		//* reescribir la propiedad 'length' con cada setState, pues esta es final
 		//* lo que impide modificar el valor que se le asigna al definirlo.
 		_tabController = new TabController(
 			vsync: this,
-			length: _productList.length,
+			length: _productList.getProductList.length,
+			//? Esta definición reinicia el _tabController.index a 0.
 		);
 		//* _tabController.index vuelve a 0 cada que se ejecuta el método build().
 		//* Por ello, después de crear el _tabController, seteamos su valor index:
-		//? 	1. Cada que se crea un nuevo tab.
+		//? 	1. Cada que se crea un nuevo tab, para que este tome el foco.
 		//*		Al crear un nuevo Tab, _currentTab toma el valor de
 		//*		_productList.length-1 para que, posteriormente a la ejecución de
 		//*		build(), _tabController.index tome el valor de _currentTab.
-		if (_isProductAdded) {
-			_tabController.index = _currentTab; //! Problema aqui al borrar producto
-		}
-		_isProductAdded = false; //* Establece a _isProductAdded como falso.
-		//? 	2. Cada que se navega entre tabs.
-		//*		_tabController.index toma automáticamente el valor del Tab visualizado.
-
-
-		//? Este es el código que mueve el foco al último tab creado.
-		_tabController.animateTo(
-			_productList.length-1, //* _tabController.index tomará este valor.
+		if (_productWasAdded) { //TODO: Optimzar esta condición de ser posible
+			_tabController.animateTo( //? mover el foco al último tab creado.
+			_productList.getProductList.length-1, //* _tabController.index tomará este valor.
 			duration: Duration(milliseconds: 5000),
 			curve: Curves.decelerate
-		);
-		_currentTab = _tabController.index; //* Almacenamos el valor index actual. 
+			);
+			//* Almacenar el valor index actual para actualizar el _tabController.index
+			//* cuando el _tabController se redefina.
+			_currentTab = _tabController.index;
+			_productWasAdded = false; //* Establece a _productWasAdded como falso.
 
+		} else {
+		//?		2. Al eliminar un Tab, para que el foco se mantenga en el índice.
+			_tabController.animateTo( //? mover el foco al último tab creado.
+				_currentTab, //* _tabController.index tomará este valor.
+				duration: Duration(milliseconds: 5000),
+				curve: Curves.decelerate
+			);
+		}
+		//? 	3. Cada que se navega entre tabs.
+		//*		_tabController.index toma automáticamente el valor del Tab visualizado.
 
 		//* Recepción del Id de la cotización que se está creando.
 		final String _quotationId = ModalRoute.of(context).settings.arguments;
-
-		// //TODO: Eliminar esta condición al terminar esta ruta
-		// //* Condición momentanea para utilizar la página sin recibir datos de CotizacionesPage
-		// if (_quotationId != null) {
-		// 	//? mostrar en consola los datos de la cotización _quotetion.
-		// 	print(_quotationId);
-		// }
 
 		return Scaffold(
 			appBar: AppBar(
@@ -112,7 +116,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 	}
 
 	Row _createFloatingActionButton() {
-		(_productList.length > 1)
+		(_productList.getProductList.length > 1)
 			? _moreOptions = Row(
 					children: [
 						SizedBox(width: 16.0),
@@ -122,8 +126,6 @@ class _ProductosCotState extends State<ProductosCotPage>
 								setState(() {
 									_removeProduct();
 								});
-								//* Sentancia para remover el tab visible en pantalla
-								// setState(() => _productList.removeAt(_tabController.index));
 							}
 						)
 					],
@@ -134,22 +136,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 			children: [
 				FloatingActionButton(
 					child: Icon(Icons.add),
-					onPressed: () {
-						setState(() {
-							_addProduct();
-						});
-
-						// //TODO: Usar este método para colocar el foco en el último tab
-						// //todo: creado.
-						// //* Lineas encargadas de realizar el cambio entre pestañas
-						// _tabController.animateTo(
-						// 	_productList.length-1, //* _tabController.index tomará este valor
-						// 	duration: Duration(milliseconds: 5000),
-						// 	curve: Curves.decelerate
-						// );
-						// //* Para este momento _tabController.index ya cambió de valor.
-						// _currentTab = _tabController.index;
-					},
+					onPressed: () => setState(() => _addProduct()),
 				),
 				_moreOptions
 			],
@@ -161,11 +148,9 @@ class _ProductosCotState extends State<ProductosCotPage>
 			TextButton(
 				child: Text('Cancelar'),
 				onPressed: () {
-				 print('Tab actual: ${_tabController.index}');
-				 print('Tab actual: $_currentTab');
-				 print('La lista actual: $_productList');
-				 print('Longitud de la lista: ${_productList.length}');
-			}),
+					print('');
+				}
+			),
 			ElevatedButton(
 				child: Text('Siguiente'),
 				onPressed: () {}
@@ -177,64 +162,73 @@ class _ProductosCotState extends State<ProductosCotPage>
 		return TabBar(
 			controller: _tabController,
 			isScrollable: true,
-			tabs: _productList.map((ProductModel product) {
+			tabs: _productList.getProductList.map((ProductModel product) {
 				return Tab(text: 'Linea');
 			}).toList(),
 		);
 	}
 
 	TabBarView _createTabBarView() {
+		//? Al redibujar, indicar los datos que debe mostrar cada ProductForm
+		//? ¿Cómo? Mandandoles el ProductModel que le corresponda y seteando esos
+		//? valores en los TexfFormField :D.
+		//? En el momento en el que se introduzcan datos, guardarlos en el
+		//? ProductModel, para que después estos datos sean usados al
+		//? redibujar cada TabBarView. Así solventar el problema del índice perdido
+		//? Cuando eliminamos un Tab diferente al último ingresado.
 		return TabBarView(
 			controller: _tabController,
-			children: _productList.map((ProductModel product) {
+			children: _productList.getProductList.map((ProductModel product) {
 				return ProductForm(
+					productModel: product, //* Nuevo cambio (error a solv.: índice perdido)
 					tabController: _tabController,
 					unidadSelec: _unidadSelec,
 					unidad: _unidad,
 					monedaSelec: _monedaSelec,
-					moneda: _moneda
+					moneda: _moneda,
+					// updateProduct: _updateProduct,
 				);
 			}).toList(),
 		);
 	}
 
 	void _addProduct() { //? Agregar producto a la lista.
-		_isProductAdded = true;
-
-		_productList.add(new ProductModel());
-		//? La lista de Tabs aumenta en base a la lista de productos.
-		print('previousIndex: ${_tabController.previousIndex}');
-		print('Index: ${_tabController.index}');
-		print('Current Tab: $_currentTab');
-		print('se agregó un elemento a la lista');
-		print('La lista actual: $_productList');
-		print('Nueva longitud de la lista: ${_productList.length}');
-
-		
+		//* Indicar que la proxima llamada a build será por adición de un producto.
+		_productWasAdded = true;
+		//* Agregar un producto a la lista.
+		_productList.addProduct(new ProductModel());
+		//* La lista de Tabs aumenta en base a la lista de productos.
 	}
 	
-	void _removeProduct() {
-		//? Remover de la lista el producto visible en pantalla
-		// int _nextIndex;
-		// if (_tabController.index == 0
-		// 		|| _tabController.index == _productList.length-1) {
-		// 	_nextIndex = _tabController.index;
-		// } else {
-		// }
-
-		_productList.removeAt(_currentTab);
+	void _removeProduct() { //? Remover de la lista el producto visible en pantalla.
+		print('_tabController.index es: ${_tabController.index}; \n'
+					' _currentTab es: $_currentTab');
+		_currentTab = _tabController.index; //* Indicar el actual _currentTab
+		print('_currentTab se actualizó a: $_currentTab');
+		_productList.removeProduct(_currentTab);
 		print('se removió el elemento de la posición $_currentTab');
-		print('La lista actual: $_productList');
-		print('Nueva longitud de la lista: ${_productList.length}');
+		print('La lista actual: ${_productList.getProductList}');
+		print('Nueva longitud de la lista: ${_productList.getProductList.length}');
 
-		// //* Lineas encargadas de realizar el cambio entre pestañas
-		// _tabController.animateTo(
-		// 	_productList.length-1, //* _tabController.index tomará este valor
-		// 	duration: Duration(milliseconds: 5000),
-		// 	curve: Curves.decelerate
-		// );
-		// _currentTab = _tabController.index;
-
+		//* Si el elemento eliminado era el último de la lista, entonces:
+		if (_currentTab > _productList.getProductList.length-1) {
+			//* Tomará el foco el actual último elemento de la lista.
+			_currentTab = _productList.getProductList.length-1;
+		}
 	}
 
+	// void _updateProduct(ProductModel _productReceived) {
+	// 	_productList[_currentTab].linea 			= _productReceived.linea;
+	// 	_productList[_currentTab].nombre 			= _productReceived.nombre;
+	// 	_productList[_currentTab].noParte 		= _productReceived.noParte;
+	// 	_productList[_currentTab].marca				= _productReceived.marca;
+	// 	_productList[_currentTab].modelo 			= _productReceived.modelo;
+	// 	_productList[_currentTab].cantidad 		= _productReceived.cantidad;
+	// 	_productList[_currentTab].unidad 			= _productReceived.unidad;
+	// 	_productList[_currentTab].comentario	= _productReceived.comentario;
+	// 	_productList[_currentTab].moneda 			= _productReceived.moneda;
+	// 	_productList[_currentTab].precio 			= _productReceived.precio;
+
+	// 	print('productModel.linea en la lista es: ${_productList[_currentTab].linea}');
+	// }
 }

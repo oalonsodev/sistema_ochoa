@@ -1,34 +1,99 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:sistema_ochoa/provider/product_list_provider.dart';
 import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
+import 'package:sistema_ochoa/src/Models/product_model.dart';
 
 class ProductForm extends StatefulWidget {
+	final ProductModel productModel;
 	final TabController tabController;
 	final String unidadSelec;
 	final List<String> unidad;
 	final String monedaSelec;
 	final List<String> moneda;
+	final void Function(ProductModel productShipped) updateProduct;
 
-	ProductForm({
+	ProductForm(
+		{this.productModel,
 		this.tabController,
 		this.unidadSelec,
 		this.unidad,
 		this.monedaSelec,
-		this.moneda
-	});
+		this.moneda,
+		this.updateProduct});
 
 	@override
 	_ProductFormState createState() => _ProductFormState();
 }
 
-class _ProductFormState extends State<ProductForm> with AutomaticKeepAliveClientMixin {
+class _ProductFormState extends State<ProductForm>
+		with AutomaticKeepAliveClientMixin {
 	@override
-  bool get wantKeepAlive => true;
+	bool get wantKeepAlive => true;
 
+	ProductListProvider _productList;
+
+	//? ======= Form ======= 
 	final _formKey = new GlobalKey<FormState>();
-	
+
+	//? ======= Controladores =======
+	TextEditingController _controllerLinea;
+	TextEditingController _controllerNombre;
+	TextEditingController _controllerNoParte;
+	TextEditingController _controllerMarca;
+	TextEditingController _controllerModelo;
+	TextEditingController _controllerCantidad;
+	TextEditingController _controllerUnidad;
+	TextEditingController _controllerComentario;
+
+	@override
+	void initState() {
+		// TODO: implement initState
+		super.initState();
+		_controllerLinea			= new TextEditingController();
+		_controllerLinea			= new TextEditingController();
+		_controllerNombre			= new TextEditingController();
+		_controllerNoParte		= new TextEditingController();
+		_controllerMarca			= new TextEditingController();
+		_controllerModelo			= new TextEditingController();
+		_controllerCantidad		= new TextEditingController();
+		_controllerUnidad			= new TextEditingController();
+		_controllerComentario	= new TextEditingController();
+	}
+
+	@override
+	void dispose() {
+		// TODO: implement dispose
+		_controllerLinea.dispose();
+		_controllerNombre.dispose();
+		_controllerNoParte.dispose();
+		_controllerMarca.dispose();
+		_controllerModelo.dispose();
+		_controllerCantidad.dispose();
+		_controllerUnidad.dispose();
+		_controllerComentario.dispose();
+		super.dispose();
+	}
+
 	@override
 	Widget build(BuildContext context) {
 		super.build(context);
+
+		_productList = Provider.of(context);
+		
+		//* Las siguientes lineas permiten que en los TextFormFields se redibujen
+		//* los datos actuales por cada producto de la lista de productos.
+		//* (para que se vayan los elementos que eliminemos 😉)
+		_controllerLinea.text				= widget.productModel.linea?.toString() ?? '';
+		_controllerNombre.text 			= widget.productModel.nombre ?? '';
+		_controllerNoParte.text 		= widget.productModel.noParte?.toString() ?? '';
+		_controllerMarca.text 			= widget.productModel.marca ?? '';
+		_controllerModelo.text 			= widget.productModel.modelo ?? '';
+		_controllerCantidad.text 		= widget.productModel.cantidad?.toString() ?? '';
+		_controllerUnidad.text 			= widget.productModel.unidad ?? '';
+		_controllerComentario.text 	= widget.productModel.comentario ?? '';
+
 		return ListView(
 			padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
 			children: [
@@ -37,7 +102,7 @@ class _ProductFormState extends State<ProductForm> with AutomaticKeepAliveClient
 					autovalidateMode: AutovalidateMode.onUserInteraction,
 					child: Column(
 						children: [
-							_createTFFLinea(),
+							_createTFFLinea(widget.tabController),
 							utils.createSpace(24.0),
 							_createTFFNombre(widget.tabController),
 							utils.createSpace(24.0),
@@ -64,57 +129,63 @@ class _ProductFormState extends State<ProductForm> with AutomaticKeepAliveClient
 	}
 
 	//* Campos del formulario
-	TextFormField _createTFFLinea() {
+	TextFormField _createTFFLinea(TabController tabController) {
 		return TextFormField(
+			controller: _controllerLinea,
 			decoration: InputDecoration(
 				labelText: 'Linea',
 				border: OutlineInputBorder()
 			),
+			validator: (value) {
+			  return utils.formFieldIsNumeric(value);
+			},
+			onSaved: (value) {
+				print('${value} fue guardado');
+			},
+			onFieldSubmitted: (value) {
+				setState(() {
+					print('se escribió $value');
+					_productList.updateProduct(
+						tabController.index,
+						linea: num.parse(value)
+					);
+				});
+			},
 		);
 	}
 
 	TextFormField _createTFFNombre(TabController tabController) {
 		return TextFormField(
 			decoration: InputDecoration(
-				labelText: 'Nombre del producto',
-				border: OutlineInputBorder()
-			),
+					labelText: 'Nombre del producto', border: OutlineInputBorder()),
 		);
 	}
 
 	TextFormField _createTFFNoParte() {
 		return TextFormField(
 			decoration: InputDecoration(
-				labelText: 'No. de parte',
-				border: OutlineInputBorder()
-			),
+					labelText: 'No. de parte', border: OutlineInputBorder()),
 		);
 	}
 
 	TextFormField _createTFFMarca() {
 		return TextFormField(
-			decoration: InputDecoration(
-				labelText: 'Marca',
-				border: OutlineInputBorder()
-			),
+			decoration:
+					InputDecoration(labelText: 'Marca', border: OutlineInputBorder()),
 		);
 	}
 
 	TextFormField _createTFFModelo() {
 		return TextFormField(
-			decoration: InputDecoration(
-				labelText: 'Modelo',
-				border: OutlineInputBorder()
-			),
+			decoration:
+					InputDecoration(labelText: 'Modelo', border: OutlineInputBorder()),
 		);
 	}
 
 	TextFormField _createTFFCantidad() {
 		return TextFormField(
-			decoration: InputDecoration(
-				labelText: 'Cantidad',
-				border: OutlineInputBorder()
-			),
+			decoration:
+					InputDecoration(labelText: 'Cantidad', border: OutlineInputBorder()),
 		);
 	}
 
@@ -122,20 +193,17 @@ class _ProductFormState extends State<ProductForm> with AutomaticKeepAliveClient
 		return DropdownButtonFormField<String>(
 			decoration: InputDecoration(border: OutlineInputBorder()),
 			value: unidadSelec,
-			items: unidad.map((String opt) =>
-				DropdownMenuItem(child: Text(opt), value: opt))
-				.toList(),
+			items: unidad
+					.map((String opt) => DropdownMenuItem(child: Text(opt), value: opt))
+					.toList(),
 			onChanged: (optSelec) => setState(() => unidadSelec = optSelec),
 		);
 	}
 
 	TextFormField _createComentario() {
 		return TextFormField(
-			decoration: InputDecoration(
-				labelText: 'Comentario',
-				border: OutlineInputBorder()
-			)
-		);
+				decoration: InputDecoration(
+						labelText: 'Comentario', border: OutlineInputBorder()));
 	}
 
 	Row _createRowPrecioUnit(String monedaSelec, List<String> moneda) {
@@ -145,36 +213,30 @@ class _ProductFormState extends State<ProductForm> with AutomaticKeepAliveClient
 					child: DropdownButtonFormField<String>(
 						decoration: InputDecoration(border: OutlineInputBorder()),
 						value: monedaSelec,
-						items: moneda.map((String opt) =>
-							DropdownMenuItem(child: Text(opt), value: opt))
-							.toList(),
+						items: moneda
+								.map((String opt) =>
+										DropdownMenuItem(child: Text(opt), value: opt))
+								.toList(),
 						onChanged: (String optSelec) =>
-							setState(() => monedaSelec = optSelec),
+								setState(() => monedaSelec = optSelec),
 					),
 				),
 				SizedBox(width: 16.0),
 				Expanded(
-					flex: 3,
-					child: TextFormField(
-						decoration: InputDecoration(
-							labelText: 'Precio unitario',
-							border: OutlineInputBorder()
-						),
-					)
-				)
+						flex: 3,
+						child: TextFormField(
+							decoration: InputDecoration(
+									labelText: 'Precio unitario', border: OutlineInputBorder()),
+						))
 			],
 		);
 	}
 
 	TextFormField _createSubtotal() {
 		return TextFormField(
-			decoration: InputDecoration(
-				enabled: false,
-				labelText: 'Subtotal',
-				border: OutlineInputBorder()
-			)
-		);
+				decoration: InputDecoration(
+						enabled: false,
+						labelText: 'Subtotal',
+						border: OutlineInputBorder()));
 	}
-
-  
 }

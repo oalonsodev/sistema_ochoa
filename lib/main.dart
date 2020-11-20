@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart' as global;
+import 'package:sistema_ochoa/provider/product_list_provider.dart';
 
 import 'package:sistema_ochoa/src/utils/app_theme.dart';
 import 'package:sistema_ochoa/src/utils/routes.dart' as routes;
@@ -13,24 +15,28 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return  Provider(
 
-      child: MaterialApp(
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [
-          const Locale('es', 'ES'),
-          const Locale('en', 'US')
-        ],
+      child: global.ChangeNotifierProvider(
+        create: (context) => ProductListProvider(),
 
-        debugShowCheckedModeBanner: false,
-        title: 'Material App',
-        
-        initialRoute: routes.initialRoute,
-        routes: routes.getRoutes(),
+        child: MaterialApp(
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale('es', 'ES'),
+            const Locale('en', 'US')
+          ],
 
-        theme: appTheme(),
+          debugShowCheckedModeBanner: false,
+          title: 'Material App',
+          
+          initialRoute: routes.initialRoute,
+          routes: routes.getRoutes(),
+
+          theme: appTheme(),
+        ),
       )
     );
 
