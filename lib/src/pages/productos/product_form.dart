@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:sistema_ochoa/provider/product_form_provider.dart';
 import 'package:sistema_ochoa/provider/product_list_provider.dart';
+
 import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
 import 'package:sistema_ochoa/src/Models/product_model.dart';
 
@@ -29,13 +31,13 @@ class ProductForm extends StatefulWidget {
 
 class _ProductFormState extends State<ProductForm>
 		with AutomaticKeepAliveClientMixin {
+	//? Método heredado para mantener el estado del widget
 	@override
 	bool get wantKeepAlive => true;
 
-	ProductListProvider _productList;
-
-	//? ======= Form ======= 
-	final _formKey = new GlobalKey<FormState>();
+	//? ======= Providers =======
+	ProductListProvider _productProvider; //* Proveedor de productos.
+	ProductFormProvider _formProvider; //* Proveedor del formulario.
 
 	//? ======= Controladores =======
 	TextEditingController _controllerLinea;
@@ -80,7 +82,9 @@ class _ProductFormState extends State<ProductForm>
 	Widget build(BuildContext context) {
 		super.build(context);
 
-		_productList = Provider.of(context);
+		//* Definición de los provider usados
+		_productProvider = Provider.of(context);
+		_formProvider = Provider.of(context);
 		
 		//* Las siguientes lineas permiten que en los TextFormFields se redibujen
 		//* los datos actuales por cada producto de la lista de productos.
@@ -98,7 +102,7 @@ class _ProductFormState extends State<ProductForm>
 			padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
 			children: [
 				Form(
-					key: _formKey,
+					key: _formProvider.getFormKey,
 					autovalidateMode: AutovalidateMode.onUserInteraction,
 					child: Column(
 						children: [
@@ -137,15 +141,15 @@ class _ProductFormState extends State<ProductForm>
 				border: OutlineInputBorder()
 			),
 			validator: (value) {
-			  return utils.formFieldIsNumeric(value);
+				return utils.formFieldIsNumeric(value);
 			},
 			onSaved: (value) {
-				print('${value} fue guardado');
+				print('${value} fue guardado por onSave');
 			},
 			onFieldSubmitted: (value) {
 				setState(() {
 					print('se escribió $value');
-					_productList.updateProduct(
+					_productProvider.updateProduct(
 						tabController.index,
 						linea: num.parse(value)
 					);

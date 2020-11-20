@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:sistema_ochoa/provider/product_form_provider.dart';
 import 'package:sistema_ochoa/provider/product_list_provider.dart';
 
 import 'package:sistema_ochoa/src/Models/product_model.dart';
@@ -24,7 +26,9 @@ class ProductosCotPage extends StatefulWidget {
 
 class _ProductosCotState extends State<ProductosCotPage>
 		with TickerProviderStateMixin {
-	ProductListProvider _productList; //* Lista de productos.
+	//? ======= Providers =======
+	ProductListProvider _productProvider; //* Proveedor de productos.
+	ProductFormProvider _formProvider; //* Proveedor del formulario.
 
 	//? ======= TabBar =======
 	TabController _tabController; //* Controlador del TabBar.
@@ -62,14 +66,16 @@ class _ProductosCotState extends State<ProductosCotPage>
 
 	@override
 	Widget build(BuildContext context) {
-		_productList = Provider.of(context);
+		//* Definición de los provider usados
+		_productProvider = Provider.of(context);
+		_formProvider = Provider.of(context);
 
 		//* La definición del controlador se lleva a cabo aquí para poder
 		//* reescribir la propiedad 'length' con cada setState, pues esta es final
 		//* lo que impide modificar el valor que se le asigna al definirlo.
 		_tabController = new TabController(
 			vsync: this,
-			length: _productList.getProductList.length,
+			length: _productProvider.getProductList.length,
 			//? Esta definición reinicia el _tabController.index a 0.
 		);
 		//* _tabController.index vuelve a 0 cada que se ejecuta el método build().
@@ -80,7 +86,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 		//*		build(), _tabController.index tome el valor de _currentTab.
 		if (_productWasAdded) { //TODO: Optimzar esta condición de ser posible
 			_tabController.animateTo( //? mover el foco al último tab creado.
-			_productList.getProductList.length-1, //* _tabController.index tomará este valor.
+			_productProvider.getProductList.length-1, //* _tabController.index tomará este valor.
 			duration: Duration(milliseconds: 5000),
 			curve: Curves.decelerate
 			);
@@ -116,17 +122,13 @@ class _ProductosCotState extends State<ProductosCotPage>
 	}
 
 	Row _createFloatingActionButton() {
-		(_productList.getProductList.length > 1)
+		(_productProvider.getProductList.length > 1)
 			? _moreOptions = Row(
 					children: [
 						SizedBox(width: 16.0),
 						FloatingActionButton(
 							child: Icon(Icons.clear),
-							onPressed: () {
-								setState(() {
-									_removeProduct();
-								});
-							}
+							onPressed: () => setState(() => _removeProduct())
 						)
 					],
 				)
@@ -136,7 +138,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 			children: [
 				FloatingActionButton(
 					child: Icon(Icons.add),
-					onPressed: () => setState(() => _addProduct()),
+					onPressed: () => setState(() => _addProduct())
 				),
 				_moreOptions
 			],
@@ -153,7 +155,11 @@ class _ProductosCotState extends State<ProductosCotPage>
 			),
 			ElevatedButton(
 				child: Text('Siguiente'),
-				onPressed: () {}
+				onPressed: () {
+					if (_formProvider.formIsValid()) {
+						_formProvider.saveForm();
+					}
+				}
 			)
 		];
 	}
@@ -162,7 +168,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 		return TabBar(
 			controller: _tabController,
 			isScrollable: true,
-			tabs: _productList.getProductList.map((ProductModel product) {
+			tabs: _productProvider.getProductList.map((ProductModel product) {
 				return Tab(text: 'Linea');
 			}).toList(),
 		);
@@ -178,7 +184,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 		//? Cuando eliminamos un Tab diferente al último ingresado.
 		return TabBarView(
 			controller: _tabController,
-			children: _productList.getProductList.map((ProductModel product) {
+			children: _productProvider.getProductList.map((ProductModel product) {
 				return ProductForm(
 					productModel: product, //* Nuevo cambio (error a solv.: índice perdido)
 					tabController: _tabController,
@@ -196,7 +202,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 		//* Indicar que la proxima llamada a build será por adición de un producto.
 		_productWasAdded = true;
 		//* Agregar un producto a la lista.
-		_productList.addProduct(new ProductModel());
+		_productProvider.addProduct(new ProductModel());
 		//* La lista de Tabs aumenta en base a la lista de productos.
 	}
 	
@@ -205,30 +211,15 @@ class _ProductosCotState extends State<ProductosCotPage>
 					' _currentTab es: $_currentTab');
 		_currentTab = _tabController.index; //* Indicar el actual _currentTab
 		print('_currentTab se actualizó a: $_currentTab');
-		_productList.removeProduct(_currentTab);
+		_productProvider.removeProduct(_currentTab);
 		print('se removió el elemento de la posición $_currentTab');
-		print('La lista actual: ${_productList.getProductList}');
-		print('Nueva longitud de la lista: ${_productList.getProductList.length}');
+		print('La lista actual: ${_productProvider.getProductList}');
+		print('Nueva longitud de la lista: ${_productProvider.getProductList.length}');
 
 		//* Si el elemento eliminado era el último de la lista, entonces:
-		if (_currentTab > _productList.getProductList.length-1) {
+		if (_currentTab > _productProvider.getProductList.length-1) {
 			//* Tomará el foco el actual último elemento de la lista.
-			_currentTab = _productList.getProductList.length-1;
+			_currentTab = _productProvider.getProductList.length-1;
 		}
 	}
-
-	// void _updateProduct(ProductModel _productReceived) {
-	// 	_productList[_currentTab].linea 			= _productReceived.linea;
-	// 	_productList[_currentTab].nombre 			= _productReceived.nombre;
-	// 	_productList[_currentTab].noParte 		= _productReceived.noParte;
-	// 	_productList[_currentTab].marca				= _productReceived.marca;
-	// 	_productList[_currentTab].modelo 			= _productReceived.modelo;
-	// 	_productList[_currentTab].cantidad 		= _productReceived.cantidad;
-	// 	_productList[_currentTab].unidad 			= _productReceived.unidad;
-	// 	_productList[_currentTab].comentario	= _productReceived.comentario;
-	// 	_productList[_currentTab].moneda 			= _productReceived.moneda;
-	// 	_productList[_currentTab].precio 			= _productReceived.precio;
-
-	// 	print('productModel.linea en la lista es: ${_productList[_currentTab].linea}');
-	// }
 }

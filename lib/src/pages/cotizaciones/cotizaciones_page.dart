@@ -30,7 +30,6 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 	@override
 	void initState() {
 		super.initState();
-		_formKey							= new GlobalKey<FormState>();
 		_quotation						= new QuotationModel();
 		_quotationProvider		= new QuotationProvider();
 		_condicionVentaSelec	= 'Condiciones de venta';
