@@ -16,6 +16,13 @@ class ProductFormProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //* Remover un GlobalKey de la lista.
+  void removeGlobalKey(int index) {
+    _formKeyList.remove(index);
+
+    notifyListeners();
+  }
+
   //* Ejecutar método save de un determinado formulario mediante su GlobalKey.
   void saveForm(int index) {
     _formKeyList[index].currentState.save();
