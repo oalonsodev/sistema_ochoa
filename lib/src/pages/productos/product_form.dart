@@ -102,7 +102,7 @@ class _ProductFormState extends State<ProductForm>
 			padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
 			children: [
 				Form(
-					key: _formProvider.getFormKey,
+					// key: _formProvider.getFormKey,
 					autovalidateMode: AutovalidateMode.onUserInteraction,
 					child: Column(
 						children: [
@@ -140,9 +140,9 @@ class _ProductFormState extends State<ProductForm>
 				labelText: 'Linea',
 				border: OutlineInputBorder()
 			),
-			validator: (value) {
-				return utils.formFieldIsNumeric(value);
-			},
+			// validator: (value) {
+			// 	return utils.formFieldIsNumeric(value);
+			// },
 			onSaved: (value) {
 				print('${value} fue guardado por onSave');
 			},

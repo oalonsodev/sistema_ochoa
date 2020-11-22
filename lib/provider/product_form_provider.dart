@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
 
 class ProductFormProvider with ChangeNotifier {
-  //* Global Key del formulario.
-  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  //* Lista de GlobalKeys.
+  List<GlobalKey<FormState>> _formKeyList = [new GlobalKey<FormState>()];
 
-  //* obtener el GlobalKey.
-  GlobalKey<FormState> get getFormKey {
-    return _formKey;
+  //* obtener la lista de GlobalKeys.
+  List<GlobalKey<FormState>> get getFormKeyList {
+    return _formKeyList;
   }
 
-  //* ejecutar el método save.
-  void saveForm() {
-    _formKey.currentState.save();
+  //* Agregar un GlobalKey a la lista.
+  void addGlobalKey() {
+    _formKeyList.add(new GlobalKey<FormState>());
 
     notifyListeners();
   }
 
-  //* Validar los campos del formulario.
-  bool formIsValid() {
-    return _formKey.currentState.validate();
+  //* Ejecutar método save de un determinado formulario mediante su GlobalKey.
+  void saveForm(int index) {
+    _formKeyList[index].currentState.save();
+
+    notifyListeners();
+  }
+
+  //* Validar los campos de un determinado formulario mediante su GlobalKey.
+  bool formIsValid(int index) {
+    return _formKeyList[index].currentState.validate();
   }
 }
