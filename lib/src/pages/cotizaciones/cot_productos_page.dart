@@ -156,8 +156,10 @@ class _ProductosCotState extends State<ProductosCotPage>
 			ElevatedButton(
 				child: Text('Siguiente'),
 				onPressed: () {
-					if (_formProvider.formIsValid()) {
-						_formProvider.saveForm();
+					if (_formProvider.formIsValid(_tabController.index)) {
+						_formProvider.saveForm(_tabController.index);
+            print('Se guardo la información del formulario '
+                  'con índice ${_tabController.index}');
 					}
 				}
 			)
@@ -204,6 +206,9 @@ class _ProductosCotState extends State<ProductosCotPage>
 		//* Agregar un producto a la lista.
 		_productProvider.addProduct(new ProductModel());
 		//* La lista de Tabs aumenta en base a la lista de productos.
+
+    //* Agregar un GlobalKey a la lista de GlobalKeys.
+    _formProvider.addGlobalKey();
 	}
 	
 	void _removeProduct() { //? Remover de la lista el producto visible en pantalla.
@@ -215,6 +220,9 @@ class _ProductosCotState extends State<ProductosCotPage>
 		print('se removió el elemento de la posición $_currentTab');
 		print('La lista actual: ${_productProvider.getProductList}');
 		print('Nueva longitud de la lista: ${_productProvider.getProductList.length}');
+
+    //* Remover el GlobalKey, del formulario visible, de la lista de GlobalKeys.
+    _formProvider.removeGlobalKey(_currentTab);
 
 		//* Si el elemento eliminado era el último de la lista, entonces:
 		if (_currentTab > _productProvider.getProductList.length-1) {
