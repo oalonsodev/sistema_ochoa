@@ -230,4 +230,8 @@ class _ProductosCotState extends State<ProductosCotPage>
 			_currentTab = _productProvider.getProductList.length-1;
 		}
 	}
+
+  void arratrado() {
+    _tabController.addListener(() { print('Tabcontroller cambió?');});
+  }
 }
