@@ -48,13 +48,14 @@ class _ProductosCotState extends State<ProductosCotPage>
 	void initState() {
 		// TODO: implement initState
 		super.initState();
-		_currentTab   	= 0; //* Indice indicador del tab inicial
-		_productWasAdded	= false; //* Indica si el build se redibuja por adición de producto.
-		// _productList  	= [new ProductModel()]; //* Lista inical de productos.
-		_unidadSelec  	= 'Unidad'; //* Valor inicial del menú 'Unidad'.
-		_unidad       	= List.unmodifiable(['Unidad','Pieza','Servicio','Ml.','Kl.','L.']) ; //* Lista de uni.
-		_monedaSelec  	= 'USD';
-		_moneda       	= List.unmodifiable(['USD','MX']); //* Lista de monedas
+    _tabController    = _createTabController();
+		_currentTab   	  = _tabController.index; //* Copia de la posición index actual.
+		_productWasAdded  = false; //* Indica si el build se redibuja por adición de producto.
+		// _productList    	= [new ProductModel()]; //* Lista inical de productos.
+		_unidadSelec  	  = 'Unidad'; //* Valor inicial del menú 'Unidad'.
+		_unidad       	  = List.unmodifiable(['Unidad','Pieza','Servicio','Ml.','Kl.','L.']) ; //* Lista de uni.
+		_monedaSelec  	  = 'USD';
+		_moneda       	  = List.unmodifiable(['USD','MX']); //* Lista de monedas
 	}
 
 	@override
@@ -73,11 +74,11 @@ class _ProductosCotState extends State<ProductosCotPage>
 		//* La definición del controlador se lleva a cabo aquí para poder
 		//* reescribir la propiedad 'length' con cada setState, pues esta es final
 		//* lo que impide modificar el valor que se le asigna al definirlo.
-		_tabController = new TabController(
-			vsync: this,
-			length: _productProvider.getProductList.length,
-			//? Esta definición reinicia el _tabController.index a 0.
-		);
+		// _tabController = new TabController(
+		// 	vsync: this,
+		// 	length: _productProvider.getProductList.length,
+		// 	//? Esta definición reinicia el _tabController.index a 0.
+		// );
 		//* _tabController.index vuelve a 0 cada que se ejecuta el método build().
 		//* Por ello, después de crear el _tabController, seteamos su valor index:
 		//? 	1. Cada que se crea un nuevo tab, para que este tome el foco.
@@ -87,7 +88,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 		if (_productWasAdded) { //TODO: Optimzar esta condición de ser posible
 			_tabController.animateTo( //? mover el foco al último tab creado.
 			_productProvider.getProductList.length-1, //* _tabController.index tomará este valor.
-			duration: Duration(milliseconds: 5000),
+			duration: Duration(seconds: 5),
 			curve: Curves.decelerate
 			);
 			//* Almacenar el valor index actual para actualizar el _tabController.index
@@ -205,8 +206,8 @@ class _ProductosCotState extends State<ProductosCotPage>
 		_productWasAdded = true;
 		//* Agregar un producto a la lista.
 		_productProvider.addProduct(new ProductModel());
-		//* La lista de Tabs aumenta en base a la lista de productos.
-
+		//* Redefinir el TabController actualizando su longitud.
+    _tabController = _createTabController();
     //* Agregar un GlobalKey a la lista de GlobalKeys.
     _formProvider.addGlobalKey();
 	}
@@ -220,6 +221,8 @@ class _ProductosCotState extends State<ProductosCotPage>
 		print('se removió el elemento de la posición $_currentTab');
 		print('La lista actual: ${_productProvider.getProductList}');
 		print('Nueva longitud de la lista: ${_productProvider.getProductList.length}');
+    //* Redefinir el TabController actualizando su longitud.
+    _tabController = _createTabController();
 
     //* Remover el GlobalKey, del formulario visible, de la lista de GlobalKeys.
     _formProvider.removeGlobalKey(_currentTab);
@@ -230,6 +233,13 @@ class _ProductosCotState extends State<ProductosCotPage>
 			_currentTab = _productProvider.getProductList.length-1;
 		}
 	}
+
+  TabController _createTabController() {
+    return new TabController(
+      vsync: this,
+      length: _productProvider?.getProductList?.length ?? 1,
+    );
+  }
 
   void arratrado() {
     _tabController.addListener(() { print('Tabcontroller cambió?');});
