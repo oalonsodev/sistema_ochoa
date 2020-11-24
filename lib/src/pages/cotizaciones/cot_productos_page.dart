@@ -32,8 +32,9 @@ class _ProductosCotState extends State<ProductosCotPage>
 
 	//? ======= TabBar =======
 	TabController _tabController; //* Controlador del TabBar.
-	int _currentTab; //* Índice del tab seleccionado.
-	bool _productWasAdded; //* Indica si el build se redibuja por adición de producto.
+	int _currentTab; //* Copia del índice del tab seleccionado.
+	bool _productWasAdded; //* Indica si se agregó un producto.
+	bool _lastProductWasRemove; //* Indica si se eliminó el producto de la última posición.
 	
 	//? ======= FloatingActionButton =======
 	Widget _moreOptions; //* Botón de eliminación opcional
@@ -48,9 +49,10 @@ class _ProductosCotState extends State<ProductosCotPage>
 	void initState() {
 		// TODO: implement initState
 		super.initState();
-    _tabController    = _createTabController();
+    _createTabController();
 		_currentTab   	  = _tabController.index; //* Copia de la posición index actual.
 		_productWasAdded  = false; //* Indica si el build se redibuja por adición de producto.
+		_lastProductWasRemove  = false; //* Indica si el build se redibuja por adición de producto.
 		// _productList    	= [new ProductModel()]; //* Lista inical de productos.
 		_unidadSelec  	  = 'Unidad'; //* Valor inicial del menú 'Unidad'.
 		_unidad       	  = List.unmodifiable(['Unidad','Pieza','Servicio','Ml.','Kl.','L.']) ; //* Lista de uni.
@@ -70,42 +72,6 @@ class _ProductosCotState extends State<ProductosCotPage>
 		//* Definición de los provider usados
 		_productProvider = Provider.of(context);
 		_formProvider = Provider.of(context);
-
-		//* La definición del controlador se lleva a cabo aquí para poder
-		//* reescribir la propiedad 'length' con cada setState, pues esta es final
-		//* lo que impide modificar el valor que se le asigna al definirlo.
-		// _tabController = new TabController(
-		// 	vsync: this,
-		// 	length: _productProvider.getProductList.length,
-		// 	//? Esta definición reinicia el _tabController.index a 0.
-		// );
-		//* _tabController.index vuelve a 0 cada que se ejecuta el método build().
-		//* Por ello, después de crear el _tabController, seteamos su valor index:
-		//? 	1. Cada que se crea un nuevo tab, para que este tome el foco.
-		//*		Al crear un nuevo Tab, _currentTab toma el valor de
-		//*		_productList.length-1 para que, posteriormente a la ejecución de
-		//*		build(), _tabController.index tome el valor de _currentTab.
-		if (_productWasAdded) { //TODO: Optimzar esta condición de ser posible
-			_tabController.animateTo( //? mover el foco al último tab creado.
-			_productProvider.getProductList.length-1, //* _tabController.index tomará este valor.
-			duration: Duration(seconds: 5),
-			curve: Curves.decelerate
-			);
-			//* Almacenar el valor index actual para actualizar el _tabController.index
-			//* cuando el _tabController se redefina.
-			_currentTab = _tabController.index;
-			_productWasAdded = false; //* Establece a _productWasAdded como falso.
-
-		} else {
-		//?		2. Al eliminar un Tab, para que el foco se mantenga en el índice.
-			_tabController.animateTo( //? mover el foco al último tab creado.
-				_currentTab, //* _tabController.index tomará este valor.
-				duration: Duration(milliseconds: 5000),
-				curve: Curves.decelerate
-			);
-		}
-		//? 	3. Cada que se navega entre tabs.
-		//*		_tabController.index toma automáticamente el valor del Tab visualizado.
 
 		//* Recepción del Id de la cotización que se está creando.
 		final String _quotationId = ModalRoute.of(context).settings.arguments;
@@ -159,8 +125,8 @@ class _ProductosCotState extends State<ProductosCotPage>
 				onPressed: () {
 					if (_formProvider.formIsValid(_tabController.index)) {
 						_formProvider.saveForm(_tabController.index);
-            print('Se guardo la información del formulario '
-                  'con índice ${_tabController.index}');
+						print('Se guardo la información del formulario '
+									'con índice ${_tabController.index}');
 					}
 				}
 			)
@@ -207,41 +173,100 @@ class _ProductosCotState extends State<ProductosCotPage>
 		//* Agregar un producto a la lista.
 		_productProvider.addProduct(new ProductModel());
 		//* Redefinir el TabController actualizando su longitud.
-    _tabController = _createTabController();
-    //* Agregar un GlobalKey a la lista de GlobalKeys.
-    _formProvider.addGlobalKey();
+		_createTabController();
+    //* Recorrer el foco.
+    _updateFocus();
+		//* Agregar un GlobalKey a la lista de GlobalKeys.
+		_formProvider.addGlobalKey();
 	}
 	
 	void _removeProduct() { //? Remover de la lista el producto visible en pantalla.
-		print('_tabController.index es: ${_tabController.index}; \n'
-					' _currentTab es: $_currentTab');
-		_currentTab = _tabController.index; //* Indicar el actual _currentTab
-		print('_currentTab se actualizó a: $_currentTab');
-		_productProvider.removeProduct(_currentTab);
-		print('se removió el elemento de la posición $_currentTab');
+		print('_tabController.index es: ${_tabController.index}');
+		// _currentTab = _tabController.index; //* Indicar el actual _currentTab
+		_productProvider.removeProduct(_tabController.index);
+		print('se removió el elemento de la posición ${_tabController.index}');
 		print('La lista actual: ${_productProvider.getProductList}');
 		print('Nueva longitud de la lista: ${_productProvider.getProductList.length}');
+		
     //* Redefinir el TabController actualizando su longitud.
-    _tabController = _createTabController();
-
-    //* Remover el GlobalKey, del formulario visible, de la lista de GlobalKeys.
-    _formProvider.removeGlobalKey(_currentTab);
+		_createTabController();
 
 		//* Si el elemento eliminado era el último de la lista, entonces:
-		if (_currentTab > _productProvider.getProductList.length-1) {
+		if (_tabController.index > _productProvider.getProductList.length-1) {
 			//* Tomará el foco el actual último elemento de la lista.
-			_currentTab = _productProvider.getProductList.length-1;
+      _lastProductWasRemove = true;
 		}
+
+    //* Recorrer el foco.
+    _updateFocus();
+
+		//* Remover el GlobalKey, del formulario visible, de la lista de GlobalKeys.
+		_formProvider.removeGlobalKey(_currentTab);
+
 	}
 
-  TabController _createTabController() {
-    return new TabController(
-      vsync: this,
-      length: _productProvider?.getProductList?.length ?? 1,
-    );
-  }
+	/// La propiedad ```length``` es final, por lo que para poder editarla es 
+	/// necesario redefinir a _tabController.
+	/// 
+	/// Este método es llamado en 2 diferentes ocasiones:
+	/// * Cuando se agrega un nuevo producto a la lista.
+	/// * Cuando se remueve algún producto de la lista.
+	void _createTabController() {
+		_tabController = new TabController(
+			vsync: this,
+			length: _productProvider?.getProductList?.length ?? 1,
+		);
+	}
 
-  void arratrado() {
-    _tabController.addListener(() { print('Tabcontroller cambió?');});
-  }
+	/// Debe ejecutarse después de agregar o eliminar un
+  /// -
+  /// producto de la lista y de redefinir a ```_tabController```.
+	/// -
+	/// Siempre que se redefine _tabController, su propiedad 'index' regresa a 0.
+	/// Por ello, después de redefinir el _tabController, cambiamos su valor
+  /// index:
+	/// 
+	/// **1. Cada que se crea un nuevo tab, para que este tome el foco.**
+	///	Al crear un nuevo Tab, _currentTab toma el valor de _productList.length-1
+	/// para que, posteriormente a la redefinición de _tabController,
+	/// _tabController.index tome el valor de _currentTab.
+	/// 
+	/// **2. Al eliminar un Tab, para que el foco se mantenga en el índice.**
+	/// En este caso pueden suceder dos cosas:
+	/// 	- si el elemento eliminado era el último de la lista, ```_currentTab```
+	/// tomará el valor de _productList.length-1 para que, posteriormente a la
+	/// redefinición de _tabController, _tabController.index tome el valor de
+	/// _currentTab.
+	/// 	- si el elemento eliminado era uno distinto al último de la lista,
+	/// ```_currentTab``` tomará el valor de _tabController.index para que,
+	/// posteriormente a la redefinición de _tabController, _tabController.index
+	/// tome el valor de _currentTab.
+	/// 
+	/// **3. Cada que se navega entre tabs, para actualizar a ```_currentTab```.**
+  /// Cuando se navega entre ```Tab```s, ```_tabController.index``` toma
+  /// automáticamente el valor índice del ```Tab``` al que se navega.
+  /// Sin embargo _currentTab no; por lo que, para que sea seguro el uso
+  /// externo de ```_currentTab```, hay que actualizar su valor en el mismo
+  /// momento que ```_tabController.index```.
+	void _updateFocus() {
+		if (_productWasAdded || _lastProductWasRemove) {
+			_currentTab = _productProvider.getProductList.length-1;
+		} else {
+			_currentTab = _tabController.index;
+		}
+
+		_tabController.animateTo( //? Barrer el TabBarView a la posición indicada.
+      _currentTab, //* _tabController.index tomará este valor.
+      duration: Duration(seconds: 5),
+      curve: Curves.decelerate
+		);
+
+    //* Indicar que los siguientes casos han concluido:
+		if (_productWasAdded) _productWasAdded = false;
+		if (_lastProductWasRemove) _lastProductWasRemove = false;
+	}
+
+	void arratrado() {
+		_tabController.addListener(() { print('Tabcontroller cambió?'); });
+	}
 }
