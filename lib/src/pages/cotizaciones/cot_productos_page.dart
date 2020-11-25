@@ -50,6 +50,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 		// TODO: implement initState
 		super.initState();
     _createTabController();
+    _tabController.addListener(_listener);
 		_currentTab   	  = _tabController.index; //* Copia de la posición index actual.
 		_productWasAdded  = false; //* Indica si el build se redibuja por adición de producto.
 		_lastProductWasRemove  = false; //* Indica si el build se redibuja por adición de producto.
@@ -182,14 +183,13 @@ class _ProductosCotState extends State<ProductosCotPage>
 	
 	void _removeProduct() { //? Remover de la lista el producto visible en pantalla.
 		print('_tabController.index es: ${_tabController.index}');
-		// _currentTab = _tabController.index; //* Indicar el actual _currentTab
 		_productProvider.removeProduct(_tabController.index);
 		print('se removió el elemento de la posición ${_tabController.index}');
 		print('La lista actual: ${_productProvider.getProductList}');
 		print('Nueva longitud de la lista: ${_productProvider.getProductList.length}');
-		
-    //* Redefinir el TabController actualizando su longitud.
-		_createTabController();
+
+		//* Remover el GlobalKey, del formulario visible, de la lista de GlobalKeys.
+		_formProvider.removeGlobalKey(_tabController.index);
 
 		//* Si el elemento eliminado era el último de la lista, entonces:
 		if (_tabController.index > _productProvider.getProductList.length-1) {
@@ -197,11 +197,15 @@ class _ProductosCotState extends State<ProductosCotPage>
       _lastProductWasRemove = true;
 		}
 
+    //* Almacenar el index actual antes de redefinir a _tabController
+    //* (Para retomar la posición al eliminar un elemento diferente al último)
+		_currentTab = _tabController.index;
+		
+    //* Redefinir el TabController actualizando su longitud.
+		_createTabController();
+    
     //* Recorrer el foco.
     _updateFocus();
-
-		//* Remover el GlobalKey, del formulario visible, de la lista de GlobalKeys.
-		_formProvider.removeGlobalKey(_currentTab);
 
 	}
 
@@ -252,7 +256,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 		if (_productWasAdded || _lastProductWasRemove) {
 			_currentTab = _productProvider.getProductList.length-1;
 		} else {
-			_currentTab = _tabController.index;
+			//* _currentTab mantiene su valor.
 		}
 
 		_tabController.animateTo( //? Barrer el TabBarView a la posición indicada.
@@ -266,7 +270,12 @@ class _ProductosCotState extends State<ProductosCotPage>
 		if (_lastProductWasRemove) _lastProductWasRemove = false;
 	}
 
-	void arratrado() {
-		_tabController.addListener(() { print('Tabcontroller cambió?'); });
+	void _listener() {
+    if (_tabController.indexIsChanging) {
+      setState(() {
+        
+      print('Tabcontroller cambió?');
+      });
+    }
 	}
 }
