@@ -10,19 +10,11 @@ import 'package:sistema_ochoa/src/Models/product_model.dart';
 class ProductForm extends StatefulWidget {
 	final ProductModel productModel;
 	final TabController tabController;
-	final String unidadSelec;
-	final List<String> unidad;
-	final String monedaSelec;
-	final List<String> moneda;
 	final void Function(ProductModel productShipped) updateProduct;
 
 	ProductForm(
 		{this.productModel,
 		this.tabController,
-		this.unidadSelec,
-		this.unidad,
-		this.monedaSelec,
-		this.moneda,
 		this.updateProduct});
 
 	@override
@@ -39,6 +31,12 @@ class _ProductFormState extends State<ProductForm>
 	ProductListProvider _productProvider; //* Proveedor de productos.
 	ProductFormProvider _formProvider; //* Proveedor del formulario.
 
+  //? ======= Form =======
+	String        _unidadSelec;
+	List<String>  _unidad;
+	String        _monedaSelec;
+	List<String>  _moneda;
+
 	//? ======= Controladores =======
 	TextEditingController _controllerLinea;
 	TextEditingController _controllerNombre;
@@ -53,6 +51,10 @@ class _ProductFormState extends State<ProductForm>
 	void initState() {
 		// TODO: implement initState
 		super.initState();
+    _unidadSelec  	  = 'Unidad'; //* Valor inicial del menú 'Unidad'.
+		_unidad       	  = List.unmodifiable(['Unidad','Pieza','Servicio','Ml.','Kl.','L.']) ; //* Lista de uni.
+		_monedaSelec  	  = 'USD';
+		_moneda       	  = List.unmodifiable(['USD','MX']); //* Lista de monedas
 		_controllerLinea			= new TextEditingController();
 		_controllerLinea			= new TextEditingController();
 		_controllerNombre			= new TextEditingController();
@@ -118,11 +120,11 @@ class _ProductFormState extends State<ProductForm>
 							utils.createSpace(24.0),
 							_createTFFCantidad(),
 							utils.createSpace(24.0),
-							_createDBFFUnidad(widget.unidadSelec, widget.unidad),
+							_createDBFFUnidad(_unidadSelec, _unidad),
 							utils.createSpace(24.0),
 							_createComentario(),
 							utils.createSpace(24.0),
-							_createRowPrecioUnit(widget.monedaSelec, widget.moneda),
+							_createRowPrecioUnit(_monedaSelec, _moneda),
 							utils.createSpace(24.0),
 							_createSubtotal(),
 						],

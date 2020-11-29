@@ -39,12 +39,6 @@ class _ProductosCotState extends State<ProductosCotPage>
 	//? ======= FloatingActionButton =======
 	Widget _moreOptions; //* Botón de eliminación opcional
 
-	//? ======= Form =======
-	String        _unidadSelec;
-	List<String>  _unidad;
-	String        _monedaSelec;
-	List<String>  _moneda;
-
 	@override
 	void initState() {
 		// TODO: implement initState
@@ -55,10 +49,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 		_productWasAdded  = false; //* Indica si el build se redibuja por adición de producto.
 		_lastProductWasRemove  = false; //* Indica si el build se redibuja por adición de producto.
 		// _productList    	= [new ProductModel()]; //* Lista inical de productos.
-		_unidadSelec  	  = 'Unidad'; //* Valor inicial del menú 'Unidad'.
-		_unidad       	  = List.unmodifiable(['Unidad','Pieza','Servicio','Ml.','Kl.','L.']) ; //* Lista de uni.
-		_monedaSelec  	  = 'USD';
-		_moneda       	  = List.unmodifiable(['USD','MX']); //* Lista de monedas
+		
 	}
 
 	@override
@@ -158,11 +149,6 @@ class _ProductosCotState extends State<ProductosCotPage>
 				return ProductForm(
 					productModel: product, //* Nuevo cambio (error a solv.: índice perdido)
 					tabController: _tabController,
-					unidadSelec: _unidadSelec,
-					unidad: _unidad,
-					monedaSelec: _monedaSelec,
-					moneda: _moneda,
-					// updateProduct: _updateProduct,
 				);
 			}).toList(),
 		);
@@ -220,12 +206,17 @@ class _ProductosCotState extends State<ProductosCotPage>
 			vsync: this,
 			length: _productProvider?.getProductList?.length ?? 1,
 		);
+
+    //* Agregar listener al controller redefinido.
+    _tabController.addListener(_listener);
 	}
 
 	/// Debe ejecutarse después de agregar o eliminar un
   /// -
-  /// producto de la lista y de redefinir a ```_tabController```.
+  /// producto de la lista y de redefinir a
 	/// -
+  ///  ```_tabController```.
+  /// -
 	/// Siempre que se redefine _tabController, su propiedad 'index' regresa a 0.
 	/// Por ello, después de redefinir el _tabController, cambiamos su valor
   /// index:
@@ -245,13 +236,6 @@ class _ProductosCotState extends State<ProductosCotPage>
 	/// ```_currentTab``` tomará el valor de _tabController.index para que,
 	/// posteriormente a la redefinición de _tabController, _tabController.index
 	/// tome el valor de _currentTab.
-	/// 
-	/// **3. Cada que se navega entre tabs, para actualizar a ```_currentTab```.**
-  /// Cuando se navega entre ```Tab```s, ```_tabController.index``` toma
-  /// automáticamente el valor índice del ```Tab``` al que se navega.
-  /// Sin embargo _currentTab no; por lo que, para que sea seguro el uso
-  /// externo de ```_currentTab```, hay que actualizar su valor en el mismo
-  /// momento que ```_tabController.index```.
 	void _updateFocus() {
 		if (_productWasAdded || _lastProductWasRemove) {
 			_currentTab = _productProvider.getProductList.length-1;
@@ -270,12 +254,13 @@ class _ProductosCotState extends State<ProductosCotPage>
 		if (_lastProductWasRemove) _lastProductWasRemove = false;
 	}
 
+  /// Cuando se navega entre ```Tab```s, ```_tabController.index``` toma
+  /// automáticamente el valor índice del ```Tab``` al que se navega.
+  /// Sin embargo _currentTab no; por lo que, para que sea seguro el uso
+  /// externo de ```_currentTab```, hay que actualizar su valor en el mismo
+  /// momento que ```_tabController.index```.
 	void _listener() {
-    if (_tabController.indexIsChanging) {
-      setState(() {
-        
-      print('Tabcontroller cambió?');
-      });
-    }
+    _currentTab = _tabController.index; //* Copia de la posición index actual.
+    print('Tabcontroller cambió: _currentTab es: $_currentTab');
 	}
 }
