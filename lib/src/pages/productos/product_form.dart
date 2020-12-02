@@ -3,19 +3,15 @@ import 'package:provider/provider.dart';
 
 import 'package:sistema_ochoa/provider/product_form_provider.dart';
 import 'package:sistema_ochoa/provider/product_list_provider.dart';
+import 'package:sistema_ochoa/provider/current_tab_provider.dart';
 
 import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
 import 'package:sistema_ochoa/src/Models/product_model.dart';
 
 class ProductForm extends StatefulWidget {
 	final ProductModel productModel;
-	final TabController tabController;
-	final void Function(ProductModel productShipped) updateProduct;
 
-	ProductForm(
-		{this.productModel,
-		this.tabController,
-		this.updateProduct});
+	ProductForm({this.productModel});
 
 	@override
 	_ProductFormState createState() => _ProductFormState();
@@ -30,6 +26,7 @@ class _ProductFormState extends State<ProductForm>
 	//? ======= Providers =======
 	ProductListProvider _productProvider; //* Proveedor de productos.
 	ProductFormProvider _formProvider; //* Proveedor del formulario.
+	CurrentTabProvider _currentTabProvider; //* Proveedor del tab actual.
 
   //? ======= Form =======
 	String        _unidadSelec;
@@ -84,9 +81,10 @@ class _ProductFormState extends State<ProductForm>
 	Widget build(BuildContext context) {
 		super.build(context);
 
-		//* Definición de los provider usados
+		//? ======= Providers =======
 		_productProvider = Provider.of(context);
 		_formProvider = Provider.of(context);
+		_currentTabProvider = Provider.of(context);
 		
 		//* Las siguientes lineas permiten que en los TextFormFields se redibujen
 		//* los datos actuales por cada producto de la lista de productos.
@@ -108,9 +106,9 @@ class _ProductFormState extends State<ProductForm>
 					autovalidateMode: AutovalidateMode.onUserInteraction,
 					child: Column(
 						children: [
-							_createTFFLinea(widget.tabController),
+							_createTFFLinea(),
 							utils.createSpace(24.0),
-							_createTFFNombre(widget.tabController),
+							_createTFFNombre(),
 							utils.createSpace(24.0),
 							_createTFFNoParte(),
 							utils.createSpace(24.0),
@@ -135,7 +133,7 @@ class _ProductFormState extends State<ProductForm>
 	}
 
 	//* Campos del formulario
-	TextFormField _createTFFLinea(TabController tabController) {
+	TextFormField _createTFFLinea() {
 		return TextFormField(
 			controller: _controllerLinea,
 			decoration: InputDecoration(
@@ -146,13 +144,13 @@ class _ProductFormState extends State<ProductForm>
 			// 	return utils.formFieldIsNumeric(value);
 			// },
 			onSaved: (value) {
-				print('${value} fue guardado por onSave');
+				print('$value fue guardado por onSave');
 			},
 			onFieldSubmitted: (value) {
 				setState(() {
 					print('se escribió $value');
 					_productProvider.updateProduct(
-						tabController.index,
+						_currentTabProvider.currentTab,
 						linea: num.parse(value)
 					);
 				});
@@ -160,7 +158,7 @@ class _ProductFormState extends State<ProductForm>
 		);
 	}
 
-	TextFormField _createTFFNombre(TabController tabController) {
+	TextFormField _createTFFNombre() {
 		return TextFormField(
 			decoration: InputDecoration(
 					labelText: 'Nombre del producto', border: OutlineInputBorder()),

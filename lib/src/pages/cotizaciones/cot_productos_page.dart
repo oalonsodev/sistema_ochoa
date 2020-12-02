@@ -155,13 +155,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 		return TabBarView(
 			controller: _tabController,
 			children: _productProvider.getProductList.map((ProductModel product) {
-				return ProductForm(
-					productModel: product,
-					//* Este parámetro no será necesario al tener un Provider de
-          //* _currentTab. Actualmente se utiliza para tener un indicador de
-          //* cuál producto debe guardar los datos ingresados en los FormFields.
-					tabController: _tabController,
-				);
+				return ProductForm( productModel: product );
 			}).toList(),
 		);
 	}
