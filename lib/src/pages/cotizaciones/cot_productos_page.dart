@@ -112,8 +112,9 @@ class _ProductosCotState extends State<ProductosCotPage>
 			TextButton(
 				child: Text('Cancelar'),
 				onPressed: () {
-					print('${_tabController.index}');
-					print('${_currentTabProvider.currentTab}');
+					print('currentTab: ${_currentTabProvider.currentTab}');
+					print('productList: ${_productProvider.getProductList}');
+					print('formKeyList: ${_formProvider.getFormKeyList}');
 				}
 			),
 			ElevatedButton(

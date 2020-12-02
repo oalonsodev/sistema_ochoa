@@ -18,7 +18,7 @@ class ProductFormProvider with ChangeNotifier {
 
   /// Remover un GlobalKey de la lista.
   void removeGlobalKey(int index) {
-    _formKeyList.remove(index);
+    _formKeyList.removeAt(index);
 
     notifyListeners();
   }
@@ -26,8 +26,6 @@ class ProductFormProvider with ChangeNotifier {
   /// Ejecutar método save de un determinado formulario mediante su GlobalKey.
   void saveForm(int index) {
     _formKeyList[index].currentState.save();
-
-    notifyListeners();
   }
 
   /// Validar los campos de un determinado formulario mediante su GlobalKey.

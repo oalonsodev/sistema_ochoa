@@ -28,7 +28,7 @@ class _ProductFormState extends State<ProductForm>
 	ProductFormProvider _formProvider; //* Proveedor del formulario.
 	CurrentTabProvider _currentTabProvider; //* Proveedor del tab actual.
 
-  //? ======= Form =======
+	//? ======= Form =======
 	String        _unidadSelec;
 	List<String>  _unidad;
 	String        _monedaSelec;
@@ -48,10 +48,10 @@ class _ProductFormState extends State<ProductForm>
 	void initState() {
 		// TODO: implement initState
 		super.initState();
-    _unidadSelec  	  = 'Unidad'; //* Valor inicial del menú 'Unidad'.
-		_unidad       	  = List.unmodifiable(['Unidad','Pieza','Servicio','Ml.','Kl.','L.']) ; //* Lista de uni.
-		_monedaSelec  	  = 'USD';
-		_moneda       	  = List.unmodifiable(['USD','MX']); //* Lista de monedas
+		_unidadSelec  = 'Unidad'; //* Valor inicial del menú 'Unidad'.
+		_unidad       = List.unmodifiable(['Unidad','Pieza','Servicio','Ml.','Kl.','L.']) ; //* Lista de uni.
+		_monedaSelec  = 'USD';
+		_moneda       = List.unmodifiable(['USD','MX']); //* Lista de monedas
 		_controllerLinea			= new TextEditingController();
 		_controllerLinea			= new TextEditingController();
 		_controllerNombre			= new TextEditingController();
@@ -102,7 +102,7 @@ class _ProductFormState extends State<ProductForm>
 			padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
 			children: [
 				Form(
-					// key: _formProvider.getFormKey,
+					key: _formProvider.getFormKeyList[_currentTabProvider.currentTab],
 					autovalidateMode: AutovalidateMode.onUserInteraction,
 					child: Column(
 						children: [
@@ -147,13 +147,11 @@ class _ProductFormState extends State<ProductForm>
 				print('$value fue guardado por onSave');
 			},
 			onFieldSubmitted: (value) {
-				setState(() {
-					print('se escribió $value');
-					_productProvider.updateProduct(
-						_currentTabProvider.currentTab,
-						linea: num.parse(value)
-					);
-				});
+				print('se escribió $value');
+				_productProvider.updateProduct(
+					_currentTabProvider.currentTab,
+					linea: num.parse(value)
+				);
 			},
 		);
 	}
