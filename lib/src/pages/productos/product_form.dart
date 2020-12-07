@@ -66,6 +66,7 @@ class _ProductFormState extends State<ProductForm>
 	@override
 	void dispose() {
 		// TODO: implement dispose
+    // _formProvider.getFormKeyList[_currentTabProvider.currentTab].currentState.dispose();
 		_controllerLinea.dispose();
 		_controllerNombre.dispose();
 		_controllerNoParte.dispose();
@@ -102,7 +103,8 @@ class _ProductFormState extends State<ProductForm>
 			padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
 			children: [
 				Form(
-					key: _formProvider.getFormKeyList[_currentTabProvider.currentTab],
+					key: _formProvider.getFormKeyList[_formProvider.keyIterator()],
+					// key: _globalKey,
 					autovalidateMode: AutovalidateMode.onUserInteraction,
 					child: Column(
 						children: [

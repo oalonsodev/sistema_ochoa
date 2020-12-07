@@ -12,8 +12,8 @@ class ProductListProvider with ChangeNotifier {
 	}
 
 	//* Agregar un producto a la lista.
-	void addProduct(ProductModel product) {
-		_productList.add(product);
+	void addProduct() {
+		_productList.add(new ProductModel());
 
 		notifyListeners();
 	}

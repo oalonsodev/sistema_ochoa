@@ -90,7 +90,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 						SizedBox(width: 16.0),
 						FloatingActionButton(
 							child: Icon(Icons.clear),
-							onPressed: () => setState(() => _removeProduct())
+							onPressed: () => _removeProduct()
 						)
 					],
 				)
@@ -100,7 +100,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 			children: [
 				FloatingActionButton(
 					child: Icon(Icons.add),
-					onPressed: () => setState(() => _addProduct())
+					onPressed: () => _addProduct()
 				),
 				_moreOptions
 			],
@@ -165,7 +165,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 		//* Indicar que el siguiente cambio de foco será por adición de un producto.
 		_productWasAdded = true;
 		//* Agregar un producto a la lista.
-		_productProvider.addProduct(new ProductModel());
+		_productProvider.addProduct();
 		//* Redefinir el TabController actualizando su longitud.
 		_createTabController();
 		//* Recorrer el foco.

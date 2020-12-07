@@ -10,6 +10,5 @@ class CurrentTabProvider with ChangeNotifier {
   set currentTab(int index) {
     _currentTab = index;
 
-    notifyListeners();
   }
 }
