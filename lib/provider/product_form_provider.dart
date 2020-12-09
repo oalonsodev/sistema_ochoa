@@ -6,6 +6,7 @@ class ProductFormProvider with ChangeNotifier {
 
   /// Iterador para indicar el Key de cada Form cuando estos se redibujan.
   int _keyIterator = 0;
+  bool isTheLast = false;
 
   /// obtener la lista de GlobalKeys.
   List<GlobalKey<FormState>> get getFormKeyList {
@@ -16,14 +17,12 @@ class ProductFormProvider with ChangeNotifier {
   void addGlobalKey() {
     _formKeyList.add(new GlobalKey<FormState>());
 
-    notifyListeners();
   }
 
   /// Remover un GlobalKey de la lista.
   void removeGlobalKey(int index) {
     _formKeyList.removeAt(index);
 
-    notifyListeners();
   }
 
   /// Ejecutar método save de un determinado formulario mediante su GlobalKey.
@@ -40,27 +39,59 @@ class ProductFormProvider with ChangeNotifier {
   /// -
   /// Se retorna ```_keyIterator-1``` debido a que ```increaseIterator()```
   /// ya fué llamado.
-  int keyIterator() {
-    if (_keyIterator == _formKeyList.length) {
+  int keyIterator(int currentTab) {
+    // if (_keyIterator == _formKeyList.length) {
+    //   resetIterator();
+    //   // return _keyIterator;
+    //   return _formKeyList.length - 1;
+    // } else {
+    //   increaseIterator();
+    //   return _keyIterator - 1;
+    // }
+
+    if (isTheLast && currentTab == _formKeyList.length-1) {
+      isTheLast = false;
+      return _formKeyList.length - 1;
+    } else if (_keyIterator == _formKeyList.length-1) {
+      isTheLast = true;
       resetIterator();
       // return _keyIterator;
-      return _formKeyList.length-1;
+      return _formKeyList.length - 1;
     } else {
       increaseIterator();
       return _keyIterator - 1;
     }
-    
+
+    if (_keyIterator == _formKeyList.length) {
+      isTheLast = true;
+      resetIterator();
+      // return _keyIterator;
+      return _formKeyList.length - 1;
+    } else if (isTheLast) {
+      isTheLast = false;
+      return _formKeyList.length - 1;
+    } else {
+      increaseIterator();
+      return _keyIterator - 1;
+    }
+
+    // if (_keyIterator < _formKeyList.length-1) {
+    //   increaseIterator();
+    //   return _keyIterator - 1;
+    // } else {
+    //   resetIterator();
+    //   // return _keyIterator;
+    //   return _formKeyList.length-1;
+    // }
   }
 
   /// Aumentar en uno el valor del iterador.
   void increaseIterator() {
     _keyIterator++;
-
   }
 
   /// Restablecer iterador.
   void resetIterator() {
     _keyIterator = 0;
-
   }
 }

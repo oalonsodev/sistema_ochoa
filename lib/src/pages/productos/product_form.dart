@@ -19,7 +19,7 @@ class ProductForm extends StatefulWidget {
 
 class _ProductFormState extends State<ProductForm>
 		with AutomaticKeepAliveClientMixin {
-	//? Método heredado para mantener el estado del widget
+	//? getter heredado para mantener el estado del widget
 	@override
 	bool get wantKeepAlive => true;
 
@@ -48,6 +48,7 @@ class _ProductFormState extends State<ProductForm>
 	void initState() {
 		// TODO: implement initState
 		super.initState();
+    print('initState HashCode: ${this.hashCode}');
 		_unidadSelec  = 'Unidad'; //* Valor inicial del menú 'Unidad'.
 		_unidad       = List.unmodifiable(['Unidad','Pieza','Servicio','Ml.','Kl.','L.']) ; //* Lista de uni.
 		_monedaSelec  = 'USD';
@@ -65,6 +66,7 @@ class _ProductFormState extends State<ProductForm>
 
 	@override
 	void dispose() {
+    print('se eliminó: ${this.hashCode}');
 		// TODO: implement dispose
     // _formProvider.getFormKeyList[_currentTabProvider.currentTab].currentState.dispose();
 		_controllerLinea.dispose();
@@ -103,7 +105,10 @@ class _ProductFormState extends State<ProductForm>
 			padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
 			children: [
 				Form(
-					key: _formProvider.getFormKeyList[_formProvider.keyIterator()],
+					key: _formProvider.getFormKeyList[_formProvider.keyIterator(
+            // _currentTabProvider.forIterator
+            _currentTabProvider.currentTab
+          )],
 					// key: _globalKey,
 					autovalidateMode: AutovalidateMode.onUserInteraction,
 					child: Column(

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CurrentTabProvider with ChangeNotifier {
-  int _currentTab = 0;
+  /// Indicador del índice del tab visible en pantalla actualmente.
+  int currentTab = 0;
 
-  get currentTab {
-    return _currentTab;
-  }
+  /// Debe ser establecido como ```_tabController.index```
+  /// -
+  /// antes de redefinir a ```_tabController```.
+  /// -
+  /// Indicador, para el iterador de ```ProductFormProvider```, del índice
+  /// desde el que fue llamada la adición o eliminación de un tab.
+  int forIterator = 0;
 
-  set currentTab(int index) {
-    _currentTab = index;
-
-  }
 }

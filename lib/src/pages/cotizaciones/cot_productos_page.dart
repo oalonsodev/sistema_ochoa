@@ -120,6 +120,12 @@ class _ProductosCotState extends State<ProductosCotPage>
 			ElevatedButton(
 				child: Text('Siguiente'),
 				onPressed: () {
+          /**Trabajar con un For in para recorrer la lista de keys
+           * y ejecutar por cada una los métodos validate y save,
+           * y en caso de que validate sea falso usar el index para
+           * saber en cuál formulario se encontraron problemas y 
+           * quizá explicarlo en pantalla con algun modal :D
+           */
 					if (_formProvider.formIsValid(_tabController.index)) {
 						_formProvider.saveForm(_tabController.index);
 						print('Se guardo la información del formulario '
@@ -162,6 +168,8 @@ class _ProductosCotState extends State<ProductosCotPage>
 	}
 
 	void _addProduct() { //? Agregar producto a la lista.
+    //* Almacenar el índice actual para usarlo con el iterador de GlobalKeys
+    _currentTabProvider.forIterator = _tabController.index;
 		//* Indicar que el siguiente cambio de foco será por adición de un producto.
 		_productWasAdded = true;
 		//* Agregar un producto a la lista.
@@ -175,6 +183,8 @@ class _ProductosCotState extends State<ProductosCotPage>
 	}
 	
 	void _removeProduct() { //? Remover de la lista el producto visible en pantalla.
+    //* Almacenar el índice actual para usarlo con el iterador de GlobalKeys
+    _currentTabProvider.forIterator = _tabController.index;
 		print('_tabController.index es: ${_tabController.index}');
 		_productProvider.removeProduct(_tabController.index);
 		print('se removió el elemento de la posición ${_tabController.index}');
