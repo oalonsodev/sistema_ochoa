@@ -90,7 +90,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 						SizedBox(width: 16.0),
 						FloatingActionButton(
 							child: Icon(Icons.clear),
-							onPressed: () => _removeProduct()
+							onPressed: () => setState(() => _removeProduct())
 						)
 					],
 				)
@@ -100,7 +100,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 			children: [
 				FloatingActionButton(
 					child: Icon(Icons.add),
-					onPressed: () => _addProduct()
+					onPressed: () => setState(() => _addProduct())
 				),
 				_moreOptions
 			],
@@ -168,10 +168,12 @@ class _ProductosCotState extends State<ProductosCotPage>
 	}
 
 	void _addProduct() { //? Agregar producto a la lista.
-    //* Almacenar el índice actual para usarlo con el iterador de GlobalKeys
-    _currentTabProvider.forIterator = _tabController.index;
 		//* Indicar que el siguiente cambio de foco será por adición de un producto.
 		_productWasAdded = true;
+    //* Indicar que el redibujado será por la adición de un producto.
+    _formProvider.becauseAdd = true;
+    //* Almacenar el índice actual para usarlo con el iterador de GlobalKeys.
+    _formProvider.indexPosition = _tabController.index;
 		//* Agregar un producto a la lista.
 		_productProvider.addProduct();
 		//* Redefinir el TabController actualizando su longitud.
@@ -183,8 +185,10 @@ class _ProductosCotState extends State<ProductosCotPage>
 	}
 	
 	void _removeProduct() { //? Remover de la lista el producto visible en pantalla.
+    //* Indicar que el redibujado no será por la adición de un producto.
+    _formProvider.becauseAdd = false;
     //* Almacenar el índice actual para usarlo con el iterador de GlobalKeys
-    _currentTabProvider.forIterator = _tabController.index;
+    _formProvider.indexPosition = _tabController.index;
 		print('_tabController.index es: ${_tabController.index}');
 		_productProvider.removeProduct(_tabController.index);
 		print('se removió el elemento de la posición ${_tabController.index}');

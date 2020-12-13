@@ -14,15 +14,11 @@ class ProductListProvider with ChangeNotifier {
 	//* Agregar un producto a la lista.
 	void addProduct() {
 		_productList.add(new ProductModel());
-
-		notifyListeners();
 	}
 
 	//* Remover un producto de la lista.
 	void removeProduct(int index) {
 		_productList.removeAt(index);
-
-		notifyListeners();
 	}
 
 	//* Actualizar un producto de la lista.
@@ -45,8 +41,6 @@ class ProductListProvider with ChangeNotifier {
 			if (cantidad 		!= null)	_productList[index].cantidad 		= cantidad;
 			if (unidad 			!= null)	_productList[index].unidad 			= unidad;
 			if (comentario 	!= null)	_productList[index].comentario 	= comentario;
-
-			notifyListeners();
 
 			print('${_productList[index].toJson()}');
 	}

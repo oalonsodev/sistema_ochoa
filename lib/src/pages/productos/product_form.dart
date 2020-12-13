@@ -29,6 +29,7 @@ class _ProductFormState extends State<ProductForm>
 	CurrentTabProvider _currentTabProvider; //* Proveedor del tab actual.
 
 	//? ======= Form =======
+  GlobalKey<FormState> formKey;
 	String        _unidadSelec;
 	List<String>  _unidad;
 	String        _monedaSelec;
@@ -69,7 +70,7 @@ class _ProductFormState extends State<ProductForm>
     print('se eliminó: ${this.hashCode}');
 		// TODO: implement dispose
     // _formProvider.getFormKeyList[_currentTabProvider.currentTab].currentState.dispose();
-		_controllerLinea.dispose();
+    _controllerLinea.dispose();
 		_controllerNombre.dispose();
 		_controllerNoParte.dispose();
 		_controllerMarca.dispose();
@@ -105,11 +106,7 @@ class _ProductFormState extends State<ProductForm>
 			padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
 			children: [
 				Form(
-					key: _formProvider.getFormKeyList[_formProvider.keyIterator(
-            // _currentTabProvider.forIterator
-            _currentTabProvider.currentTab
-          )],
-					// key: _globalKey,
+					key: _formProvider.getFormKeyList[_formProvider.keyIterator()],
 					autovalidateMode: AutovalidateMode.onUserInteraction,
 					child: Column(
 						children: [
