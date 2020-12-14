@@ -8,17 +8,12 @@ import 'package:sistema_ochoa/provider/current_tab_provider.dart';
 import 'package:sistema_ochoa/src/Models/product_model.dart';
 import 'package:sistema_ochoa/src/pages/productos/product_form.dart';
 
-//TODO: Con la propiedad index del TabBar controlar en cuál item de mi lista de
-//todo: productos se ingresarán los datos de cada tab.
-
-//TODO: Crear y trabajar con el modelo de productos. Hacer una lista de
-//todo: productos y en base a ella controlar la cantidad de tabs y los datos de
-//todo: cada unaaaaaaaa :D
-
-//TODO: Agregar una propiedad al modelo de productos que actue como Key. Esta se
-//todo: vinculará con el respectivo Tab del producto, para eliminar el del
-//todo: producto que se esté visualizando. La pregunta ahora es:
-//todo: ¿Como saber cuál Tab estoy visualizando?
+/// TODO: ¿Implementar?
+/// Modificar la forma en como se asignan los Keys a el Form de cada ProductForm.
+/// Agregar una propiedad al modelo de productos que actue como Key. Esta se
+/// vinculará con el respectivo Tab del producto, para eliminar el del
+/// producto que se esté visualizando. La pregunta ahora es:
+/// ¿Como saber cuál Tab estoy visualizando?
 
 class ProductosCotPage extends StatefulWidget {
 	@override
@@ -28,35 +23,36 @@ class ProductosCotPage extends StatefulWidget {
 class _ProductosCotState extends State<ProductosCotPage>
 		with TickerProviderStateMixin {
 	//? ======= Providers =======
-	ProductListProvider _productProvider; //* Proveedor de productos.
-	ProductFormProvider _formProvider; //* Proveedor del formulario.
-	CurrentTabProvider _currentTabProvider; //* Proveedor del tab actual.
+  /// Proveedor de productos.
+	ProductListProvider _productProvider;
+  /// Proveedor del formulario.
+	ProductFormProvider _formProvider;
+  /// Proveedor del tab actual.
+	CurrentTabProvider _currentTabProvider;
 
 	//? ======= TabBar =======
-	TabController _tabController; //* Controlador del TabBar.
-	// int _currentTab; //* Copia del índice del tab seleccionado.
-	bool _productWasAdded; //* Indica si se agregó un producto.
-	bool _lastProductWasRemove; //* Indica si se eliminó el producto de la última posición.
+	/// Controlador del TabBar.
+  TabController _tabController;
+	/// Indica si se agregó un producto.
+  bool _productWasAdded;
+	/// Indica si se eliminó el producto de la última posición.
+  bool _lastProductWasRemove;
 	
 	//? ======= FloatingActionButton =======
-	Widget _moreOptions; //* Botón de eliminación opcional
+	/// Botón de eliminación opcional
+  Widget _moreOptions;
 
 	@override
 	void initState() {
-		// TODO: implement initState
 		super.initState();
 		_createTabController();
 		_tabController.addListener(_listener);
-		// _currentTab   	  = _tabController.index; //* Copia de la posición index actual.
-		_productWasAdded  = false; //* Indica si el build se redibuja por adición de producto.
-		_lastProductWasRemove  = false; //* Indica si el build se redibuja por adición de producto.
-		// _productList    	= [new ProductModel()]; //* Lista inical de productos.
-		
+    _productWasAdded  = false;
+		_lastProductWasRemove  = false;
 	}
 
 	@override
 	void dispose() {
-		// TODO: implement dispose
 		_tabController.dispose();
 		super.dispose();
 	}
@@ -176,28 +172,23 @@ class _ProductosCotState extends State<ProductosCotPage>
     _formProvider.indexPosition = _tabController.index;
 		//* Agregar un producto a la lista.
 		_productProvider.addProduct();
+		//* Agregar un GlobalKey a la lista de GlobalKeys.
+		_formProvider.addGlobalKey();
 		//* Redefinir el TabController actualizando su longitud.
 		_createTabController();
 		//* Recorrer el foco.
 		_updateFocus();
-		//* Agregar un GlobalKey a la lista de GlobalKeys.
-		_formProvider.addGlobalKey();
 	}
 	
-	void _removeProduct() { //? Remover de la lista el producto visible en pantalla.
+	void _removeProduct() {
     //* Indicar que el redibujado no será por la adición de un producto.
     _formProvider.becauseAdd = false;
     //* Almacenar el índice actual para usarlo con el iterador de GlobalKeys
     _formProvider.indexPosition = _tabController.index;
-		print('_tabController.index es: ${_tabController.index}');
+    //* Remover de la lista el producto visible en pantalla.
 		_productProvider.removeProduct(_tabController.index);
-		print('se removió el elemento de la posición ${_tabController.index}');
-		print('La lista actual: ${_productProvider.getProductList}');
-		print('Nueva longitud de la lista: ${_productProvider.getProductList.length}');
-
 		//* Remover el GlobalKey, del formulario visible, de la lista de GlobalKeys.
 		_formProvider.removeGlobalKey(_tabController.index);
-
 		//* Si el elemento eliminado era el último de la lista, entonces:
 		if (_tabController.index > _productProvider.getProductList.length-1) {
 			//* Tomará el foco el actual último elemento de la lista.
@@ -207,10 +198,8 @@ class _ProductosCotState extends State<ProductosCotPage>
 			//* (Para retomar la posición al eliminar un elemento diferente al último)
 			_currentTabProvider.currentTab = _tabController.index;
 		}
-		
 		//* Redefinir el TabController actualizando su longitud.
 		_createTabController();
-		
 		//* Recorrer el foco.
 		_updateFocus();
 	}
@@ -248,15 +237,22 @@ class _ProductosCotState extends State<ProductosCotPage>
 	/// 
 	/// **2. Al eliminar un Tab, para que el foco se mantenga en el índice.**
 	/// En este caso pueden suceder dos cosas:
-	/// 	- si el elemento eliminado era el último de la lista, ```_currentTab```
+  /// 
+	/// - si el elemento eliminado era el último de la lista, ```_currentTab```
 	/// tomará el valor de _productList.length-1 para que, posteriormente a la
 	/// redefinición de _tabController, _tabController.index tome el valor de
 	/// _currentTab.
-	/// 	- si el elemento eliminado era uno distinto al último de la lista,
+  /// 
+  /// 
+	/// - si el elemento eliminado era uno distinto al último de la lista,
 	/// ```_currentTab``` tomará el valor de _tabController.index para que,
 	/// posteriormente a la redefinición de _tabController, _tabController.index
 	/// tome el valor de _currentTab.
 	void _updateFocus() {
+    /// TODO: Error
+    /// Si se tienen solo 2 productos en la lista y se elimina el de la última
+    /// posición, al agregar un 2do producto no se actualiza el foco.
+    /// ¡Soluciónalo, Oscar del futuro! :(
 		if (_productWasAdded || _lastProductWasRemove) {
 			_currentTabProvider.currentTab = _productProvider.getProductList.length-1;
 		}
