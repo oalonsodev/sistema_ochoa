@@ -27,8 +27,9 @@ class _ClientesPageState extends State<ClientesPage> {
 	}
 
 	SliverFillRemaining _createBody(BuildContext context) {
-		// TODO: Crear FTBuilder que muestre la lista de resultados,
-		// todo: y poner este widget como initialData.
+		/// TODO: ¿Implementar?
+    /// Crear FTBuilder que muestre la lista de resultados y poner este widget
+    /// como initialData.
     return SliverFillRemaining(
 			hasScrollBody: false,
 			child: Column(
