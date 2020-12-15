@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_ochoa/src/bloc/provider.dart';
-import 'package:sistema_ochoa/src/providers/user_provider.dart';
+import 'package:sistema_ochoa/src/services/user_provider.dart';
 import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
 
 class LoginPage extends StatefulWidget {

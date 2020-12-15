@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:sistema_ochoa/src/pages/clientes/header_delegate.dart';
+import 'package:sistema_ochoa/src/views/clientes/header_delegate.dart';
 
 class ClientesPage extends StatefulWidget {
 	@override

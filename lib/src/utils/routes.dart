@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:sistema_ochoa/src/pages/cotizaciones/cot_productos_page.dart';
-import 'package:sistema_ochoa/src/pages/home_page.dart';
-import 'package:sistema_ochoa/src/pages/login_page.dart';
-import 'package:sistema_ochoa/src/pages/sign_up_page.dart';
+import 'package:sistema_ochoa/src/views/cotizaciones/cot_productos_page.dart';
+import 'package:sistema_ochoa/src/views/home_page.dart';
+import 'package:sistema_ochoa/src/views/login_page.dart';
+import 'package:sistema_ochoa/src/views/sign_up_page.dart';
 
 String initialRoute = 'addProd';
 

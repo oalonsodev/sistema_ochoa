@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:sistema_ochoa/src/pages/ajustes_page.dart';
-import 'package:sistema_ochoa/src/pages/catalogo/catalogo_page.dart';
-import 'package:sistema_ochoa/src/pages/clientes/clientes_page.dart';
-import 'package:sistema_ochoa/src/pages/cotizaciones/cotizaciones_page.dart';
-import 'package:sistema_ochoa/src/pages/proveedores/proveedores_page.dart';
+import 'package:sistema_ochoa/src/views/ajustes_page.dart';
+import 'package:sistema_ochoa/src/views/catalogo/catalogo_page.dart';
+import 'package:sistema_ochoa/src/views/clientes/clientes_page.dart';
+import 'package:sistema_ochoa/src/views/cotizaciones/cotizaciones_page.dart';
+import 'package:sistema_ochoa/src/views/proveedores/proveedores_page.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);

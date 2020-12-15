@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:sistema_ochoa/src/pages/catalogo/header_delegate.dart';
+import 'package:sistema_ochoa/src/views/catalogo/header_delegate.dart';
 
 class CatalogoPage extends StatefulWidget {
 	@override

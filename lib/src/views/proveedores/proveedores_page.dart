@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sistema_ochoa/src/pages/proveedores/header_delegate.dart';
+import 'package:sistema_ochoa/src/views/proveedores/header_delegate.dart';
 
 class ProveedoresPage extends StatelessWidget {
   @override

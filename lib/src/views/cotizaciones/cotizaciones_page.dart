@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:sistema_ochoa/src/pages/cotizaciones/header_delegate.dart';
+import 'package:sistema_ochoa/src/views/cotizaciones/header_delegate.dart';
 import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
 
-import 'package:sistema_ochoa/src/providers/quotation_provider.dart';
+import 'package:sistema_ochoa/src/services/quotation_provider.dart';
 import 'package:sistema_ochoa/src/Models/quotation_model.dart';
 
 class CotizacionesPage extends StatefulWidget {

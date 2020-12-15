@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'package:sistema_ochoa/provider/product_form_provider.dart';
-import 'package:sistema_ochoa/provider/product_list_provider.dart';
-import 'package:sistema_ochoa/provider/current_tab_provider.dart';
 
 import 'package:sistema_ochoa/src/Models/product_model.dart';
-import 'package:sistema_ochoa/src/pages/productos/product_form.dart';
+import 'package:sistema_ochoa/src/views/productos/product_form.dart';
 import 'package:sistema_ochoa/src/controllers/cot_product_.dart';
 
 /// TODO: ¿Implementar?
@@ -154,15 +149,15 @@ class _ProductosCotState extends State<ProductosCotPage>
           title: Text('¿Eliminar producto?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancelar')
+              child: Text('Cancelar'),
+              onPressed: () => Navigator.of(context).pop()
             ),
             ElevatedButton(
+              child: Text('Eliminar'),
               onPressed: () => setState(() {
                 Navigator.of(context).pop();
                 removeProduct(this);
-              }),
-              child: Text('Eliminar')
+              })
             )
           ],
         );
