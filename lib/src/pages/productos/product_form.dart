@@ -202,7 +202,7 @@ class _ProductFormState extends State<ProductForm>
 			items: unidad
 					.map((String opt) => DropdownMenuItem(child: Text(opt), value: opt))
 					.toList(),
-			onChanged: (optSelec) => setState(() => unidadSelec = optSelec),
+			onChanged: (optSelec) => unidadSelec = optSelec,
 		);
 	}
 
@@ -223,8 +223,7 @@ class _ProductFormState extends State<ProductForm>
 								.map((String opt) =>
 										DropdownMenuItem(child: Text(opt), value: opt))
 								.toList(),
-						onChanged: (String optSelec) =>
-								setState(() => monedaSelec = optSelec),
+						onChanged: (String optSelec) => monedaSelec = optSelec,
 					),
 				),
 				SizedBox(width: 16.0),
