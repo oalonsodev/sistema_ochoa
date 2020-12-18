@@ -144,18 +144,18 @@ class _ProductFormState extends State<ProductForm>
 				labelText: 'Linea',
 				border: OutlineInputBorder()
 			),
-			// validator: (value) {
-			// 	return utils.formFieldIsNumeric(value);
-			// },
-			onSaved: (value) {
-				print('$value fue guardado por onSave');
-			},
 			onFieldSubmitted: (value) {
-				print('se escribió $value');
 				_productProvider.updateProduct(
 					_currentTabProvider.currentTab,
 					linea: num.parse(value)
 				);
+				print('se escribió $value');
+			},
+			validator: (value) {
+				return utils.formFieldIsNumeric(value);
+			},
+			onSaved: (value) {
+				print('$value fue guardado por onSave');
 			},
 		);
 	}

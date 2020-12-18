@@ -53,7 +53,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 			body: _createTabBarView(),
 			floatingActionButton: _createFloatingActionButton(context),
 			floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
-			persistentFooterButtons: _createPersistantFooterButtons(context),
+			persistentFooterButtons: _createPersistantFooterButtons(),
 		);
 	}
 
@@ -81,7 +81,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 		);
 	}
 
-	List<Widget> _createPersistantFooterButtons(BuildContext context) {
+	List<Widget> _createPersistantFooterButtons() {
 		return <Widget>[
 			TextButton(
 				child: Text('Cancelar'),
@@ -91,22 +91,13 @@ class _ProductosCotState extends State<ProductosCotPage>
 					print('formKeyList: ${formProvider.getFormKeyList}');
 				}
 			),
-			ElevatedButton(
-				child: Text('Siguiente'),
-				onPressed: () {
-          /**Trabajar con un For in para recorrer la lista de keys
-           * y ejecutar por cada una los métodos validate y save,
-           * y en caso de que validate sea falso usar el index para
-           * saber en cuál formulario se encontraron problemas y 
-           * quizá explicarlo en pantalla con algun modal :D
-           */
-					if (formProvider.formIsValid(tabController.index)) {
-						formProvider.saveForm(tabController.index);
-						print('Se guardo la información del formulario '
-									'con índice ${tabController.index}');
-					}
-				}
-			)
+      Builder(
+        builder: (BuildContext context) => ElevatedButton(
+          child: Text('Siguiente'),
+          onPressed: () => validateForms(context)
+        )
+      )
+			
 		];
 	}
 
