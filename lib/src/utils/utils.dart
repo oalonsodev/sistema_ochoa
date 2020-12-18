@@ -66,28 +66,41 @@ Widget createLabelDivider(BuildContext context, String label) {
 
 Widget createSpace(double height) => SizedBox(height: height);
 
-bool isToday(String date) {
-	var currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
-
-	if (date == currentDate)
-		return true;
-	else
-		return false;
-}
-
-String formFieldIsEmpty(String value) {
-	return (value.isEmpty) ? "Rellene este campo" : null;
-}
-
-String formFieldIsNumeric(String value) {
-	final number = num.tryParse(value);
-
-	return (number == null) ? "Ingrese solo números" : null;
-}
-
 String dropDownIsValid(String value) {
 	if (value == 'Condiciones de venta')
 		return "Elija una opción";
 	else
 		return null;
 }
+
+//? Utilidades para ProductForm
+/// Valida que se haya seleccionado una unidad de medida
+String unitDDIsValid(String value) {
+	if (value == 'Unidad')
+		return "Elija una opción";
+	else
+		return null;
+}
+
+//? Utilidades para formularios en general
+bool isToday(String date) {
+	var currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+	if (date == currentDate)
+		return true;
+	else
+		return false;
+}
+
+/// Valida que un campo no esté vacío.
+String formFieldIsNotEmpty(String value) {
+	return (value.isNotEmpty) ? null : "Rellene este campo";
+}
+
+/// Valida que un campo acepte únicamente valores numéricos
+String formFieldIsNumeric(String value) {
+	final number = num.tryParse(value);
+
+	return (number == null) ? "Ingrese solo números" : null;
+}
+
+

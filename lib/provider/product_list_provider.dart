@@ -32,6 +32,8 @@ class ProductListProvider with ChangeNotifier {
 		int cantidad,
 		String unidad,
 		String comentario,
+    String moneda,
+    double precio,
 		}) {
 			if (linea 			!= null)	_productList[index].linea				= linea;
 			if (nombre 			!= null)	_productList[index].nombre			= nombre;
@@ -41,6 +43,8 @@ class ProductListProvider with ChangeNotifier {
 			if (cantidad 		!= null)	_productList[index].cantidad 		= cantidad;
 			if (unidad 			!= null)	_productList[index].unidad 			= unidad;
 			if (comentario 	!= null)	_productList[index].comentario 	= comentario;
+			if (comentario 	!= null)	_productList[index].moneda 	    = moneda;
+			if (comentario 	!= null)	_productList[index].precio 	    = precio;
 
 			print('${_productList[index].toJson()}');
 	}

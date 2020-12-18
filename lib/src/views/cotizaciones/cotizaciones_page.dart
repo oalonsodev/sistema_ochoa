@@ -113,7 +113,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			decoration: InputDecoration(
 					labelText: 'Fecha de solicitud', border: OutlineInputBorder()),
 			onTap: () => _createDatePicker(context),
-			validator: (value) => utils.formFieldIsEmpty(value),
+			validator: (value) => utils.formFieldIsNotEmpty(value),
 			onSaved: (value) => _quotation.fecha = value,
 		);
 	}
@@ -122,7 +122,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 		return TextFormField(
 			decoration: InputDecoration(
 					labelText: 'Folio de la cotización', border: OutlineInputBorder()),
-			validator: (value) => utils.formFieldIsEmpty(value),
+			validator: (value) => utils.formFieldIsNotEmpty(value),
 			onSaved: (value) => _quotation.folio = value,
 		);
 	}
@@ -140,7 +140,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 		return TextFormField(
 			decoration:
 					InputDecoration(labelText: 'Cliente', border: OutlineInputBorder()),
-			validator: (value) => utils.formFieldIsEmpty(value),
+			validator: (value) => utils.formFieldIsNotEmpty(value),
 			onSaved: (value) => _quotation.cliente = value,
 		);
 	}
@@ -149,7 +149,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 		return TextFormField(
 			decoration:
 					InputDecoration(labelText: 'Dirección', border: OutlineInputBorder()),
-			validator: (value) => utils.formFieldIsEmpty(value),
+			validator: (value) => utils.formFieldIsNotEmpty(value),
 			onSaved: (value) => _quotation.direccion = value,
 		);
 	}
@@ -158,7 +158,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 		return TextFormField(
 			decoration:
 					InputDecoration(labelText: 'Comprador', border: OutlineInputBorder()),
-			validator: (value) => utils.formFieldIsEmpty(value),
+			validator: (value) => utils.formFieldIsNotEmpty(value),
 			onSaved: (value) => _quotation.comprador = value,
 		);
 	}
@@ -167,7 +167,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 		return TextFormField(
 			decoration: InputDecoration(
 					labelText: 'Departamento', border: OutlineInputBorder()),
-			validator: (value) => utils.formFieldIsEmpty(value),
+			validator: (value) => utils.formFieldIsNotEmpty(value),
 			onSaved: (value) => _quotation.departamento = value,
 		);
 	}
@@ -192,7 +192,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			decoration: InputDecoration(
 				labelText: 'Tiempo de entrega', border: OutlineInputBorder()
 			),
-			validator: (value) => utils.formFieldIsEmpty(value),
+			validator: (value) => utils.formFieldIsNotEmpty(value),
 			onSaved: (value) => _quotation.tiempoEntrega = value,
 		);
 	}

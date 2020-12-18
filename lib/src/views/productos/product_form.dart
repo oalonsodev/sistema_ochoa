@@ -29,7 +29,7 @@ class _ProductFormState extends State<ProductForm>
 	CurrentTabProvider _currentTabProvider; //* Proveedor del tab actual.
 
 	//? ======= Form =======
-  GlobalKey<FormState> formKey;
+	GlobalKey<FormState> formKey;
 	String        _unidadSelec;
 	List<String>  _unidad;
 	String        _monedaSelec;
@@ -42,14 +42,15 @@ class _ProductFormState extends State<ProductForm>
 	TextEditingController _controllerMarca;
 	TextEditingController _controllerModelo;
 	TextEditingController _controllerCantidad;
-	TextEditingController _controllerUnidad;
 	TextEditingController _controllerComentario;
+	TextEditingController _controllerPrecio;
+	TextEditingController _controllerSubTotal;
 
 	@override
 	void initState() {
 		// TODO: implement initState
 		super.initState();
-    print('initState HashCode: ${this.hashCode}');
+		print('initState HashCode: ${this.hashCode}');
 		_unidadSelec  = 'Unidad'; //* Valor inicial del menú 'Unidad'.
 		_unidad       = List.unmodifiable(['Unidad','Pieza','Servicio','Ml.','Kl.','L.']) ; //* Lista de uni.
 		_monedaSelec  = 'USD';
@@ -61,23 +62,25 @@ class _ProductFormState extends State<ProductForm>
 		_controllerMarca			= new TextEditingController();
 		_controllerModelo			= new TextEditingController();
 		_controllerCantidad		= new TextEditingController();
-		_controllerUnidad			= new TextEditingController();
 		_controllerComentario	= new TextEditingController();
+		_controllerPrecio			= new TextEditingController();
+		_controllerSubTotal		= new TextEditingController();
 	}
 
 	@override
 	void dispose() {
-    print('se eliminó: ${this.hashCode}');
+		print('se eliminó: ${this.hashCode}');
 		// TODO: implement dispose
-    // _formProvider.getFormKeyList[_currentTabProvider.currentTab].currentState.dispose();
-    _controllerLinea.dispose();
+		// _formProvider.getFormKeyList[_currentTabProvider.currentTab].currentState.dispose();
+		_controllerLinea.dispose();
 		_controllerNombre.dispose();
 		_controllerNoParte.dispose();
 		_controllerMarca.dispose();
 		_controllerModelo.dispose();
 		_controllerCantidad.dispose();
-		_controllerUnidad.dispose();
 		_controllerComentario.dispose();
+		_controllerPrecio.dispose();
+		_controllerSubTotal.dispose();
 		super.dispose();
 	}
 
@@ -99,8 +102,14 @@ class _ProductFormState extends State<ProductForm>
 		_controllerMarca.text 			= widget.productModel.marca ?? '';
 		_controllerModelo.text 			= widget.productModel.modelo ?? '';
 		_controllerCantidad.text 		= widget.productModel.cantidad?.toString() ?? '';
-		_controllerUnidad.text 			= widget.productModel.unidad ?? '';
 		_controllerComentario.text 	= widget.productModel.comentario ?? '';
+		_controllerPrecio.text 			= widget.productModel.precio ?? '';
+		// TODO: Atender
+		/// ¿Donde se almacenará el valor del subtotal para después poder
+		/// redibujarlo?
+		/// Debe ser en la cotización, porque en ella debe quedar registrado este
+		/// dato. Agregar al modelo el campo necesario
+		_controllerSubTotal.text 		= widget.productModel.unidad ?? '';
 
 		return ListView(
 			padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
@@ -141,57 +150,85 @@ class _ProductFormState extends State<ProductForm>
 		return TextFormField(
 			controller: _controllerLinea,
 			decoration: InputDecoration(
-				labelText: 'Linea',
-				border: OutlineInputBorder()
+				labelText: 'Linea', border: OutlineInputBorder()
 			),
-			onFieldSubmitted: (value) {
-				_productProvider.updateProduct(
-					_currentTabProvider.currentTab,
-					linea: num.parse(value)
-				);
-				print('se escribió $value');
-			},
-			validator: (value) {
-				return utils.formFieldIsNumeric(value);
-			},
-			onSaved: (value) {
-				print('$value fue guardado por onSave');
-			},
+			onFieldSubmitted: (value) => _productProvider.updateProduct(
+				_currentTabProvider.currentTab,
+				linea: num.tryParse(value)
+			),
+			validator: (value) => utils.formFieldIsNumeric(value),
 		);
 	}
 
 	TextFormField _createTFFNombre() {
 		return TextFormField(
+			controller: _controllerNombre,
 			decoration: InputDecoration(
-					labelText: 'Nombre del producto', border: OutlineInputBorder()),
+				labelText: 'Nombre del producto', border: OutlineInputBorder()
+			),
+			onFieldSubmitted: (value) => _productProvider.updateProduct(
+				_currentTabProvider.currentTab,
+				nombre: value
+			),
+			validator: (value) {
+				return utils.formFieldIsNotEmpty(value);
+			},
 		);
 	}
 
 	TextFormField _createTFFNoParte() {
 		return TextFormField(
+			controller: _controllerNoParte,
 			decoration: InputDecoration(
-					labelText: 'No. de parte', border: OutlineInputBorder()),
+				labelText: 'No. de parte', border: OutlineInputBorder()
+			),
+			onFieldSubmitted: (value) => _productProvider.updateProduct(
+				_currentTabProvider.currentTab,
+				noParte: num.tryParse(value)
+			),
+			validator: (value) => utils.formFieldIsNumeric(value)
 		);
 	}
 
 	TextFormField _createTFFMarca() {
 		return TextFormField(
+			controller: _controllerMarca,
 			decoration:
-					InputDecoration(labelText: 'Marca', border: OutlineInputBorder()),
+				InputDecoration(labelText: 'Marca', border: OutlineInputBorder()
+			),
+			onFieldSubmitted: (value) => _productProvider.updateProduct(
+				_currentTabProvider.currentTab,
+				marca: value
+			),
+			validator: (value) => utils.formFieldIsNotEmpty(value),
 		);
 	}
 
 	TextFormField _createTFFModelo() {
 		return TextFormField(
+			controller: _controllerModelo,
 			decoration:
-					InputDecoration(labelText: 'Modelo', border: OutlineInputBorder()),
+				InputDecoration(labelText: 'Modelo', border: OutlineInputBorder()
+			),
+			onFieldSubmitted: (value) => _productProvider.updateProduct(
+				_currentTabProvider.currentTab,
+				modelo: value
+			),
+			validator: (value) => utils.formFieldIsNotEmpty(value),
 		);
 	}
 
 	TextFormField _createTFFCantidad() {
 		return TextFormField(
+			controller: _controllerCantidad,
 			decoration:
-					InputDecoration(labelText: 'Cantidad', border: OutlineInputBorder()),
+				InputDecoration(labelText: 'Cantidad', border: OutlineInputBorder()
+			),
+			onFieldSubmitted: (value) => _productProvider.updateProduct(
+				_currentTabProvider.currentTab,
+				cantidad: num.tryParse(value)
+			),
+			validator: (value) => utils.formFieldIsNotEmpty(value),
 		);
 	}
 
@@ -200,48 +237,81 @@ class _ProductFormState extends State<ProductForm>
 			decoration: InputDecoration(border: OutlineInputBorder()),
 			value: unidadSelec,
 			items: unidad
-					.map((String opt) => DropdownMenuItem(child: Text(opt), value: opt))
-					.toList(),
-			onChanged: (optSelec) => unidadSelec = optSelec,
+				.map((String opt) => DropdownMenuItem(child: Text(opt), value: opt))
+				.toList(),
+			onChanged: (optSelec) {
+				_productProvider.updateProduct(
+					_currentTabProvider.currentTab,
+					unidad: optSelec
+				);
+			  unidadSelec = optSelec;
+			},
+			validator: (value) => utils.unitDDIsValid(value),
 		);
 	}
 
 	TextFormField _createComentario() {
 		return TextFormField(
-				decoration: InputDecoration(
-						labelText: 'Comentario', border: OutlineInputBorder()));
+			controller: _controllerComentario,
+			decoration: InputDecoration(
+				labelText: 'Comentario', border: OutlineInputBorder()
+			),
+			onFieldSubmitted: (value) => _productProvider.updateProduct(
+				_currentTabProvider.currentTab,
+				comentario: value
+			),
+			validator: (value) => utils.formFieldIsNotEmpty(value),	
+		);
 	}
 
 	Row _createRowPrecioUnit(String monedaSelec, List<String> moneda) {
 		return Row(
 			children: [
 				Expanded(
+					flex: 1,
 					child: DropdownButtonFormField<String>(
 						decoration: InputDecoration(border: OutlineInputBorder()),
 						value: monedaSelec,
-						items: moneda
-								.map((String opt) =>
-										DropdownMenuItem(child: Text(opt), value: opt))
-								.toList(),
-						onChanged: (String optSelec) => monedaSelec = optSelec,
+						items: moneda.map(
+							(String opt) => DropdownMenuItem(child: Text(opt), value: opt))
+							.toList(),
+						onChanged: (String optSelec) {
+							_productProvider.updateProduct(
+								_currentTabProvider.currentTab,
+								moneda: optSelec
+							);
+						  monedaSelec = optSelec;
+						},
 					),
 				),
 				SizedBox(width: 16.0),
 				Expanded(
-						flex: 3,
-						child: TextFormField(
-							decoration: InputDecoration(
-									labelText: 'Precio unitario', border: OutlineInputBorder()),
-						))
+					flex: 3,
+					child: TextFormField(
+						controller: _controllerPrecio,
+						decoration: InputDecoration(
+							labelText: 'Precio unitario', border: OutlineInputBorder()
+						),
+						onFieldSubmitted: (value) => _productProvider.updateProduct(
+							_currentTabProvider.currentTab,
+							precio: num.tryParse(value)
+						),
+						validator: (value) => utils.formFieldIsNumeric(value),
+					)
+				)
 			],
 		);
 	}
 
 	TextFormField _createSubtotal() {
 		return TextFormField(
-				decoration: InputDecoration(
-						enabled: false,
-						labelText: 'Subtotal',
-						border: OutlineInputBorder()));
+			controller: _controllerSubTotal,
+			decoration: InputDecoration(
+				enabled: false,
+				labelText: 'Subtotal',
+				border: OutlineInputBorder()
+			)
+		);
+
 	}
 }
