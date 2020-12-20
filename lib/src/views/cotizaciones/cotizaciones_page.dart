@@ -21,6 +21,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 	//? Valores del formulario
 	String _condicionVentaSelec;
 	List<String> _condicionesV;
+  bool _sendingQuotation;
 	//? Controladores
 	TextEditingController _controllerDatePicker;
 
@@ -33,6 +34,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
     _formKey              = new GlobalKey<FormState>();
 		_quotation						= new QuotationModel();
 		_quotationProvider		= new QuotationProvider();
+    _sendingQuotation     = false;
 		_condicionVentaSelec	= 'Condiciones de venta';
 		_condicionesV = [
 			'Condiciones de venta',
@@ -200,9 +202,13 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 	Align _createButton(BuildContext context) {
 		return Align(
 			alignment: Alignment.centerRight,
-			child: TextButton(
-				child: Text('Siguiente'),
+			child: TextButton.icon(
+        icon: _sendingQuotation ? CircularProgressIndicator() : Container(),
+				label: Text('Siguiente'),
 				onPressed: () async {
+          //* Indicar que el envío está en proceso.
+          _sendingQuotation = true;
+
 					//* Si hay algun error, no se ejecutan las lineas despues de esta
 					//* condición. Es decir que no se guardan los datos del formulario.
 					if (!_formKey.currentState.validate()) return;

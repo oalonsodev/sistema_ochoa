@@ -185,7 +185,7 @@ class _SignUpPageState extends State<SignUpPage> {
               duration: Duration(milliseconds: 300),
               opacity: opacityButtom,
               child: ElevatedButton(
-                child: Text('Iniciar sesión'),
+                child: Text('Registrarse'),
                 style: ButtonStyle(
                   shape: MaterialStateProperty.resolveWith<OutlinedBorder>(getBorderRadius)
                 ),
@@ -216,7 +216,11 @@ class _SignUpPageState extends State<SignUpPage> {
     if (info['ok'] == true) {
       Navigator.pushReplacementNamed(context, 'home');
     } else {
-      setState(() => wasPressed = false);
+      setState(() {
+        opacityButtom = 1.0; 
+        opacityProgress = 0.0; 
+			  wasPressed = false;
+			});
       utils.showError(context, info['message']);
     }
   }

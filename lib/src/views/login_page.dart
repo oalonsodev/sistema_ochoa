@@ -224,7 +224,11 @@ class _LoginPageState extends State<LoginPage> {
 		if (info['ok'] == true) {
 			Navigator.pushReplacementNamed(context, 'home');
 		} else {
-			setState(() => wasPressed = false);
+			setState(() {
+        opacityButtom = 1.0; 
+        opacityProgress = 0.0; 
+			  wasPressed = false;
+			});
 			utils.showError(context, info['message']);
 		}
 	}
