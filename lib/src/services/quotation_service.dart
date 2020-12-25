@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'package:sistema_ochoa/src/Models/quotation_model.dart';
+import 'package:sistema_ochoa/src/models/quotation_model.dart';
 
-class QuotationProvider {
+class QuotationService {
 	final String _url = 'https://proyectoochoasc.firebaseio.com';
 	String id;
 

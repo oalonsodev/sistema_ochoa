@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:sistema_ochoa/src/Models/product_model.dart';
+import 'package:sistema_ochoa/src/models/product_model.dart';
 
 class ProductListProvider with ChangeNotifier {
 	//* Lista de productos
@@ -43,8 +43,8 @@ class ProductListProvider with ChangeNotifier {
 			if (cantidad 		!= null)	_productList[index].cantidad 		= cantidad;
 			if (unidad 			!= null)	_productList[index].unidad 			= unidad;
 			if (comentario 	!= null)	_productList[index].comentario 	= comentario;
-			if (comentario 	!= null)	_productList[index].moneda 	    = moneda;
-			if (comentario 	!= null)	_productList[index].precio 	    = precio;
+			if (moneda     	!= null)	_productList[index].moneda 	    = moneda;
+			if (precio     	!= null)	_productList[index].precio 	    = precio;
 
 			print('${_productList[index].toJson()}');
 	}

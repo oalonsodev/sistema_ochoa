@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:sistema_ochoa/src/views/cotizaciones/header_delegate.dart';
 import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
 
-import 'package:sistema_ochoa/src/services/quotation_provider.dart';
-import 'package:sistema_ochoa/src/Models/quotation_model.dart';
+import 'package:sistema_ochoa/src/services/quotation_service.dart';
+import 'package:sistema_ochoa/src/models/quotation_model.dart';
 
 class CotizacionesPage extends StatefulWidget {
 	@override
@@ -15,7 +15,7 @@ class CotizacionesPage extends StatefulWidget {
 class CotizacionesPageState extends State<CotizacionesPage> {
 	GlobalKey<FormState> _formKey; //* Key del Widget Form
 	QuotationModel _quotation; //* Modelo de producto
-	QuotationProvider _quotationProvider; //* Proveedor de métodos para los procesos REST de productos
+	QuotationService _quotationService; //* Proveedor de métodos para los procesos REST de productos
 	
 	//* ======= PageOne =======
 	//? Valores del formulario
@@ -33,7 +33,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 		super.initState();
     _formKey              = new GlobalKey<FormState>();
 		_quotation						= new QuotationModel();
-		_quotationProvider		= new QuotationProvider();
+		_quotationService    	= new QuotationService();
     _sendingQuotation     = false;
 		_condicionVentaSelec	= 'Condiciones de venta';
 		_condicionesV = [
@@ -220,7 +220,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 
 					//* Publicar en FireBase la cotización creada y
           //* asignar el ID a la cotización.
-					_quotation.id = await _quotationProvider.createQuotation(_quotation);
+					_quotation.id = await _quotationService.createQuotation(_quotation);
 
 					//* Dirigir a la pantalla para agregar productos a la cotización.
 					Navigator.pushNamed(context, 'addProd', arguments: _quotation.id);

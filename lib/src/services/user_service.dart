@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class UserProvider {
+class UserService {
 	
 	final String _fireBaseKey = 'AIzaSyDx2YClrO9l000W3fDg_T09extn3HhuWzk';
 

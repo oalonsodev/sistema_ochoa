@@ -5,8 +5,8 @@ import 'package:sistema_ochoa/provider/product_form_provider.dart';
 import 'package:sistema_ochoa/provider/product_list_provider.dart';
 import 'package:sistema_ochoa/provider/current_tab_provider.dart';
 
+import 'package:sistema_ochoa/src/models/product_model.dart';
 import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
-import 'package:sistema_ochoa/src/Models/product_model.dart';
 
 class ProductForm extends StatefulWidget {
 	final ProductModel productModel;
@@ -55,7 +55,6 @@ class _ProductFormState extends State<ProductForm>
 		_unidad       = List.unmodifiable(['Unidad','Pieza','Servicio','Ml.','Kl.','L.']) ; //* Lista de uni.
 		_monedaSelec  = 'USD';
 		_moneda       = List.unmodifiable(['USD','MX']); //* Lista de monedas
-		_controllerLinea			= new TextEditingController();
 		_controllerLinea			= new TextEditingController();
 		_controllerNombre			= new TextEditingController();
 		_controllerNoParte		= new TextEditingController();
@@ -149,6 +148,7 @@ class _ProductFormState extends State<ProductForm>
 	TextFormField _createTFFLinea() {
 		return TextFormField(
 			controller: _controllerLinea,
+      textInputAction: TextInputAction.next,
 			decoration: InputDecoration(
 				labelText: 'Linea', border: OutlineInputBorder()
 			),
@@ -163,6 +163,7 @@ class _ProductFormState extends State<ProductForm>
 	TextFormField _createTFFNombre() {
 		return TextFormField(
 			controller: _controllerNombre,
+      textInputAction: TextInputAction.next,
 			decoration: InputDecoration(
 				labelText: 'Nombre del producto', border: OutlineInputBorder()
 			),
@@ -179,6 +180,7 @@ class _ProductFormState extends State<ProductForm>
 	TextFormField _createTFFNoParte() {
 		return TextFormField(
 			controller: _controllerNoParte,
+      textInputAction: TextInputAction.next,
 			decoration: InputDecoration(
 				labelText: 'No. de parte', border: OutlineInputBorder()
 			),
@@ -193,8 +195,9 @@ class _ProductFormState extends State<ProductForm>
 	TextFormField _createTFFMarca() {
 		return TextFormField(
 			controller: _controllerMarca,
-			decoration:
-				InputDecoration(labelText: 'Marca', border: OutlineInputBorder()
+      textInputAction: TextInputAction.next,
+			decoration: InputDecoration(
+        labelText: 'Marca', border: OutlineInputBorder()
 			),
 			onFieldSubmitted: (value) => _productProvider.updateProduct(
 				_currentTabProvider.currentTab,
@@ -207,8 +210,9 @@ class _ProductFormState extends State<ProductForm>
 	TextFormField _createTFFModelo() {
 		return TextFormField(
 			controller: _controllerModelo,
-			decoration:
-				InputDecoration(labelText: 'Modelo', border: OutlineInputBorder()
+      textInputAction: TextInputAction.next,
+			decoration: InputDecoration(
+        labelText: 'Modelo', border: OutlineInputBorder()
 			),
 			onFieldSubmitted: (value) => _productProvider.updateProduct(
 				_currentTabProvider.currentTab,
@@ -289,8 +293,11 @@ class _ProductFormState extends State<ProductForm>
 					flex: 3,
 					child: TextFormField(
 						controller: _controllerPrecio,
+            keyboardType: TextInputType.number,
 						decoration: InputDecoration(
-							labelText: 'Precio unitario', border: OutlineInputBorder()
+							labelText: 'Precio unitario',
+              hintText: 'Use decimales',
+              border: OutlineInputBorder()
 						),
 						onFieldSubmitted: (value) => _productProvider.updateProduct(
 							_currentTabProvider.currentTab,

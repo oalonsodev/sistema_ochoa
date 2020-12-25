@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:sistema_ochoa/src/Models/product_model.dart';
+import 'package:sistema_ochoa/src/models/product_model.dart';
 import 'package:sistema_ochoa/src/views/productos/product_form.dart';
-import 'package:sistema_ochoa/src/controllers/cot_product_.dart';
+import 'package:sistema_ochoa/src/controllers/cot_product_controller.dart';
 
 /// TODO: ¿Implementar?
 /// Modificar la forma en como se asignan los Keys a el Form de cada ProductForm.
@@ -25,6 +25,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 	@override
 	void initState() {
 		super.initState();
+    productService = new ProductService();
 		createTabController(this);
 		tabController.addListener(listener);
     productWasAdded  = false;
@@ -94,7 +95,7 @@ class _ProductosCotState extends State<ProductosCotPage>
       Builder(
         builder: (BuildContext context) => ElevatedButton(
           child: Text('Siguiente'),
-          onPressed: () => validateForms(context)
+          onPressed: () => nextStep(context)
         )
       )
 			

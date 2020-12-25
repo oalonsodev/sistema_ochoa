@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sistema_ochoa/src/bloc/provider.dart';
-import 'package:sistema_ochoa/src/services/user_provider.dart';
+import 'package:sistema_ochoa/src/services/user_service.dart';
 import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
 
 class LoginPage extends StatefulWidget {
@@ -9,7 +9,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-	final userProvider = new UserProvider();
+	final userService = new UserService();
 
 	//* Controladores para mantener en los TextFiels el ultimo valor ingresado
 	//* (La otra opciones era quitar el patrón singleton que mantenía el
@@ -219,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
     }
 		
 		Map<String, dynamic> info =
-				await userProvider.login(bloc.emailValue, bloc.passwordValue);
+				await userService.login(bloc.emailValue, bloc.passwordValue);
 
 		if (info['ok'] == true) {
 			Navigator.pushReplacementNamed(context, 'home');

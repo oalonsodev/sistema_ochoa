@@ -4,8 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:sistema_ochoa/provider/current_tab_provider.dart';
 import 'package:sistema_ochoa/provider/product_form_provider.dart';
 import 'package:sistema_ochoa/provider/product_list_provider.dart';
+import 'package:sistema_ochoa/src/models/product_model.dart';
 
-mixin ProductCotController {
+import 'package:sistema_ochoa/src/services/product_service.dart';
+export 'package:sistema_ochoa/src/services/product_service.dart';
+
+class ProductCotController {
 	//* ======= Variables =======
 	//? => TabBar
 	/// Controlador del TabBar.
@@ -14,6 +18,10 @@ mixin ProductCotController {
 	bool productWasAdded;
 	/// Indica si se eliminó el producto de la última posición.
 	bool lastProductWasRemove;
+
+	//? => Servicios
+  /// Servicio gestor de productos
+  ProductService productService;
 
 	//? => Providers
 	/// Proveedor de productos.
@@ -153,14 +161,12 @@ mixin ProductCotController {
 		print('_currentTab es: ${currentTabProvider.currentTab}');
 	}
 
-	void validateForms(BuildContext context) {
+	void nextStep(BuildContext context) async {
 		//? Validación de los formularios.
-		for (var i = 0; i < formProvider.getFormKeyList.length; i++) {
+		for (int i = 0; i < formProvider.getFormKeyList.length; i++) {
 			if ( ! formProvider.formIsValid( i ) ) {
 				Scaffold.of(context).showSnackBar(
-					SnackBar(
-						content: Text('Verifique los datos del ${i+1}° producto'),
-					)
+					SnackBar( content: Text('Verifique los datos del ${i+1}° producto' ))
 				);
 				_allIsRight = false;
 				break;
@@ -169,12 +175,14 @@ mixin ProductCotController {
 			}
 		}
 		
-		//? Guardando los datos de los formularios.
+		//? Publicar los productos en linea.
 		if ( _allIsRight ) {
-			formProvider.getFormKeyList.forEach(( form ) {
-				// TODO: Desarrollar
-				/// Publicar los productos en la base de datos.
-			});
-		}
+      for (ProductModel product in productProvider.getProductList) {
+        product.id = await productService.createProducts(product);
+      }
+    }
+
+    //? Vaciar la lista de productos local.
+    // productProvider.getProductList.clear();
 	}
 }
