@@ -102,13 +102,13 @@ class _ProductFormState extends State<ProductForm>
 		_controllerModelo.text 			= widget.productModel.modelo ?? '';
 		_controllerCantidad.text 		= widget.productModel.cantidad?.toString() ?? '';
 		_controllerComentario.text 	= widget.productModel.comentario ?? '';
-		_controllerPrecio.text 			= widget.productModel.precio ?? '';
+		_controllerPrecio.text 			= widget.productModel.precio?.toString() ?? '';
 		// TODO: Atender
 		/// ¿Donde se almacenará el valor del subtotal para después poder
 		/// redibujarlo?
 		/// Debe ser en la cotización, porque en ella debe quedar registrado este
 		/// dato. Agregar al modelo el campo necesario
-		_controllerSubTotal.text 		= widget.productModel.unidad ?? '';
+		_controllerSubTotal.text 		= /* widget.productModel.unidad ?? */ '';
 
 		return ListView(
 			padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
@@ -293,7 +293,7 @@ class _ProductFormState extends State<ProductForm>
 					flex: 3,
 					child: TextFormField(
 						controller: _controllerPrecio,
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
 						decoration: InputDecoration(
 							labelText: 'Precio unitario',
               hintText: 'Use decimales',

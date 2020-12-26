@@ -218,12 +218,15 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 					//? mostrar en consola los datos de la cotización recien creada.
 					print(_quotation.toJson());
 
+          // TODO: Mover de lugar
+          /// La linea abajo se realizará más adelante, en la
+          /// pantalla de 'Resumen de solicitud'
 					//* Publicar en FireBase la cotización creada y
           //* asignar el ID a la cotización.
 					_quotation.id = await _quotationService.createQuotation(_quotation);
 
 					//* Dirigir a la pantalla para agregar productos a la cotización.
-					Navigator.pushNamed(context, 'addProd', arguments: _quotation.id);
+					Navigator.pushNamed(context, 'addProd', arguments: _quotation);
 				}
 			),
 		);

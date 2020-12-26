@@ -21,6 +21,16 @@ class ProductListProvider with ChangeNotifier {
 		_productList.removeAt(index);
 	}
 
+	/// Limpiar la lista de productos.
+	/// -
+	/// Este método se encarga de volver a tener un solo producto
+	/// en la lista.  
+	/// El producto estará vacío.
+	void clearList() {
+		_productList.clear();
+		addProduct();
+	}
+
 	//* Actualizar un producto de la lista.
 	void updateProduct(
 		int index, {
@@ -32,8 +42,8 @@ class ProductListProvider with ChangeNotifier {
 		int cantidad,
 		String unidad,
 		String comentario,
-    String moneda,
-    double precio,
+		String moneda,
+		double precio,
 		}) {
 			if (linea 			!= null)	_productList[index].linea				= linea;
 			if (nombre 			!= null)	_productList[index].nombre			= nombre;

@@ -175,14 +175,25 @@ class ProductCotController {
 			}
 		}
 		
+    // TODO: Mover de lugar
+    /// Todo el código de abajo se realizará más adelante, en la
+    /// pantalla de 'Resumen de solicitud'
 		//? Publicar los productos en linea.
 		if ( _allIsRight ) {
       for (ProductModel product in productProvider.getProductList) {
+        // TODO: Implementar en otro proceso.
+        /// ¿Es necesario saber el id de los productos?
+        /// Esto ahora no es necesario.
+        /// Algo similar sí será necesario cuando quiera obtener
+        /// productos desde la base de datos
         product.id = await productService.createProducts(product);
       }
-    }
 
-    //? Vaciar la lista de productos local.
-    // productProvider.getProductList.clear();
+      //? Vaciar la lista de productos local.
+      productProvider.clearList();
+      
+      //? Vaciar la lista de llaves locales.
+      formProvider.clearList();
+    }
 	}
 }

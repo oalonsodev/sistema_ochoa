@@ -36,6 +36,15 @@ class ProductFormProvider with ChangeNotifier {
     _formKeyList.removeAt(index);
   }
 
+  /// Limpiar la lista de GlobalKeys.
+	/// -
+	/// Este método se encarga de volver a tener una sola llave
+	/// en la lista.
+	void clearList() {
+		_formKeyList.clear();
+		addGlobalKey();
+	}
+
   /// Ejecutar método save de un determinado formulario mediante su GlobalKey.
   void saveForm(int index) {
     _formKeyList[index].currentState.save();
