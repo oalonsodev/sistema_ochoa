@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:sistema_ochoa/src/models/product_model.dart';
 import 'package:sistema_ochoa/src/views/productos/product_form.dart';
-import 'package:sistema_ochoa/src/controllers/cot_product_controller.dart';
+import 'package:sistema_ochoa/src/controllers/quotations/cot_product_controller.dart';
 
 /// TODO: ¿Implementar?
 /// Modificar la forma en como se asignan los Keys a el Form de cada ProductForm.
@@ -64,6 +64,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 					children: [
 						SizedBox(width: 16.0),
 						FloatingActionButton(
+              heroTag: 'FAB2',
 							child: Icon(Icons.clear),
 							onPressed: () => _dialogRemove(context)
 						)
@@ -74,6 +75,7 @@ class _ProductosCotState extends State<ProductosCotPage>
 		return Row(
 			children: [
 				FloatingActionButton(
+          heroTag: 'FAB1',
 					child: Icon(Icons.add),
 					onPressed: () => setState(() => addProduct(this))
 				),

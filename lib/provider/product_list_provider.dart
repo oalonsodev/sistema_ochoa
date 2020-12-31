@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:sistema_ochoa/src/models/product_model.dart';
 
 class ProductListProvider with ChangeNotifier {
-	//* Lista de productos
+	/// Lista de productos
 	List<ProductModel> _productList = [new ProductModel()];
 
-	//* Obtener la lista de productos.
+	/// Obtener la lista de productos.
 	List<ProductModel> get getProductList {
 		return _productList;
 	}
 
-	//* Agregar un producto a la lista.
+	/// Agregar un producto a la lista.
 	void addProduct() {
 		_productList.add(new ProductModel());
 	}
 
-	//* Remover un producto de la lista.
+	/// Remover un producto de la lista.
 	void removeProduct(int index) {
 		_productList.removeAt(index);
 	}

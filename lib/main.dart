@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sistema_ochoa/provider/product_form_provider.dart';
 import 'package:sistema_ochoa/provider/product_list_provider.dart';
 import 'package:sistema_ochoa/provider/current_tab_provider.dart';
+import 'package:sistema_ochoa/provider/quotation_provider.dart';
 import 'package:sistema_ochoa/src/bloc/provider.dart';
 
 import 'package:sistema_ochoa/src/utils/app_theme.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
 					global.ChangeNotifierProvider(create: (context) => ProductListProvider()),
 					global.ChangeNotifierProvider(create: (context) => ProductFormProvider()),
 					global.ChangeNotifierProvider(create: (context) => CurrentTabProvider()),
+					global.ChangeNotifierProvider(create: (context) => QuotationProvider()),
 				],
 
 				child: MaterialApp(

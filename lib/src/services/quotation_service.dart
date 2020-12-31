@@ -7,6 +7,7 @@ class QuotationService {
 	final String _url = 'https://proyectoochoasc.firebaseio.com';
 	String id;
 
+  /// Publicar en FireBase la cotización creada y asignar el ID a la cotización.
 	Future<String> createQuotation(QuotationModel quotation) async {
 		final url = '$_url/quotation.json';
 		final resp = await http.post(url, body: quotationModelToJson(quotation));

@@ -17,10 +17,12 @@ class QuotationModel {
 		this.departamento,
 		this.condicionesVenta,
 		this.tiempoEntrega,
-		this.productos
+		this.productos,
+    this.costoTot
 	}){
 
 		fecha = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    productos = List.empty(growable: true);
 	
 	}
 
@@ -35,6 +37,7 @@ class QuotationModel {
 	String condicionesVenta;
 	String tiempoEntrega;
 	List<String> productos;
+  double costoTot;
 
 	factory QuotationModel.fromJson(Map<String, dynamic> json) => QuotationModel(
 		id								: json["id"],
@@ -47,7 +50,8 @@ class QuotationModel {
 		departamento			: json["departamento"],
 		condicionesVenta	: json["condicionesVenta"],
 		tiempoEntrega			: json["tiempoEntrega"],
-		productos         : json["productos"]
+		productos         : json["productos"],
+		costoTot          : json["costoTot"]
 	);
 
 	Map<String, dynamic> toJson() => {
@@ -61,6 +65,7 @@ class QuotationModel {
 		"departamento"			: departamento,
 		"condicionesVenta"	: condicionesVenta,
 		"tiempoEntrega"		  : tiempoEntrega,
-		"productos"					: productos
+		"productos"					: productos,
+		"costoTot"					: costoTot
 	};
 }

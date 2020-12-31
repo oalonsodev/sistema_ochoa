@@ -1,11 +1,16 @@
+// TODO: Crear controlador:
+/// Separar el código de interfaz del código de lógica.
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+
+import 'package:sistema_ochoa/provider/quotation_provider.dart';
 
 import 'package:sistema_ochoa/src/views/cotizaciones/header_delegate.dart';
 import 'package:sistema_ochoa/src/utils/utils.dart' as utils;
 
 import 'package:sistema_ochoa/src/services/quotation_service.dart';
-import 'package:sistema_ochoa/src/models/quotation_model.dart';
 
 class CotizacionesPage extends StatefulWidget {
 	@override
@@ -14,8 +19,9 @@ class CotizacionesPage extends StatefulWidget {
 
 class CotizacionesPageState extends State<CotizacionesPage> {
 	GlobalKey<FormState> _formKey; //* Key del Widget Form
-	QuotationModel _quotation; //* Modelo de producto
-	QuotationService _quotationService; //* Proveedor de métodos para los procesos REST de productos
+	
+  /// Proveedor de la cotización actual.
+  QuotationProvider quotationProvider;
 	
 	//* ======= PageOne =======
 	//? Valores del formulario
@@ -32,8 +38,6 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 	void initState() {
 		super.initState();
     _formKey              = new GlobalKey<FormState>();
-		_quotation						= new QuotationModel();
-		_quotationService    	= new QuotationService();
     _sendingQuotation     = false;
 		_condicionVentaSelec	= 'Condiciones de venta';
 		_condicionesV = [
@@ -49,18 +53,23 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 	@override
 	void dispose() {
 		_controllerDatePicker.dispose();
+    quotationProvider.dispose();
 		super.dispose();
 	}
 
 	@override
 	Widget build(BuildContext context) {
+    quotationProvider = Provider.of(context);
+    
 		//* Asignar valor inicial al TextFormField del DatePicker sin afectar a las
 		//* asignaciones hechas desde el DatePicker.
 		//! SI coloco el valor directamente en product.fecha pues es un valor que
 		//! viene predefinido con la fecha actual en todas las cotizaciones.
-		if ( utils.isToday(_quotation.fecha) )
-			_controllerDatePicker.text = _quotation.fecha;
+		if ( utils.isToday(quotationProvider.quotation.fecha) ) {
+			_controllerDatePicker.text = quotationProvider.quotation.fecha;
+    }
 
+    
 		return TabBarView(children: [
 			_pageOne(context),
 			_pageTwo(),
@@ -116,7 +125,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 					labelText: 'Fecha de solicitud', border: OutlineInputBorder()),
 			onTap: () => _createDatePicker(context),
 			validator: (value) => utils.formFieldIsNotEmpty(value),
-			onSaved: (value) => _quotation.fecha = value,
+			onSaved: (value) => quotationProvider.quotation.fecha = value,
 		);
 	}
 
@@ -125,7 +134,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			decoration: InputDecoration(
 					labelText: 'Folio de la cotización', border: OutlineInputBorder()),
 			validator: (value) => utils.formFieldIsNotEmpty(value),
-			onSaved: (value) => _quotation.folio = value,
+			onSaved: (value) => quotationProvider.quotation.folio = value,
 		);
 	}
 
@@ -134,7 +143,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			decoration: InputDecoration(
 					labelText: 'No. de requisición', border: OutlineInputBorder()),
 			validator: (value) => utils.formFieldIsNumeric(value),
-			onSaved: (value) => _quotation.noReq = num.parse(value),
+			onSaved: (value) => quotationProvider.quotation.noReq = num.parse(value),
 		);
 	}
 
@@ -143,7 +152,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			decoration:
 					InputDecoration(labelText: 'Cliente', border: OutlineInputBorder()),
 			validator: (value) => utils.formFieldIsNotEmpty(value),
-			onSaved: (value) => _quotation.cliente = value,
+			onSaved: (value) => quotationProvider.quotation.cliente = value,
 		);
 	}
 
@@ -152,7 +161,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			decoration:
 					InputDecoration(labelText: 'Dirección', border: OutlineInputBorder()),
 			validator: (value) => utils.formFieldIsNotEmpty(value),
-			onSaved: (value) => _quotation.direccion = value,
+			onSaved: (value) => quotationProvider.quotation.direccion = value,
 		);
 	}
 
@@ -161,7 +170,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			decoration:
 					InputDecoration(labelText: 'Comprador', border: OutlineInputBorder()),
 			validator: (value) => utils.formFieldIsNotEmpty(value),
-			onSaved: (value) => _quotation.comprador = value,
+			onSaved: (value) => quotationProvider.quotation.comprador = value,
 		);
 	}
 
@@ -170,7 +179,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			decoration: InputDecoration(
 					labelText: 'Departamento', border: OutlineInputBorder()),
 			validator: (value) => utils.formFieldIsNotEmpty(value),
-			onSaved: (value) => _quotation.departamento = value,
+			onSaved: (value) => quotationProvider.quotation.departamento = value,
 		);
 	}
 
@@ -185,7 +194,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 				.toList(),
 			onChanged: (optSelec) => setState(() => _condicionVentaSelec = optSelec),
 			validator: (value) => utils.dropDownIsValid(value),
-			onSaved: (value) => _quotation.condicionesVenta = value,
+			onSaved: (value) => quotationProvider.quotation.condicionesVenta = value,
 		);
 	}
 
@@ -195,7 +204,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 				labelText: 'Tiempo de entrega', border: OutlineInputBorder()
 			),
 			validator: (value) => utils.formFieldIsNotEmpty(value),
-			onSaved: (value) => _quotation.tiempoEntrega = value,
+			onSaved: (value) => quotationProvider.quotation.tiempoEntrega = value,
 		);
 	}
 
@@ -205,7 +214,7 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			child: TextButton.icon(
         icon: _sendingQuotation ? CircularProgressIndicator() : Container(),
 				label: Text('Siguiente'),
-				onPressed: () async {
+				onPressed: () {
           //* Indicar que el envío está en proceso.
           _sendingQuotation = true;
 
@@ -216,17 +225,10 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 					//* Ejecutar la propiedad 'save' de los elementos del formulario.
 					_formKey.currentState.save();
 					//? mostrar en consola los datos de la cotización recien creada.
-					print(_quotation.toJson());
-
-          // TODO: Mover de lugar
-          /// La linea abajo se realizará más adelante, en la
-          /// pantalla de 'Resumen de solicitud'
-					//* Publicar en FireBase la cotización creada y
-          //* asignar el ID a la cotización.
-					_quotation.id = await _quotationService.createQuotation(_quotation);
+					print(quotationProvider.quotation.toJson());
 
 					//* Dirigir a la pantalla para agregar productos a la cotización.
-					Navigator.pushNamed(context, 'addProd', arguments: _quotation);
+					Navigator.pushNamed(context, 'addProd');
 				}
 			),
 		);
@@ -249,10 +251,10 @@ class CotizacionesPageState extends State<CotizacionesPage> {
 			setState(() {
 				//? Darle formato de dia/mes/año a la fecha obtenida del DatePicker
 				//? y actualizar el valor de fecha en el producto.
-				_quotation.fecha = DateFormat('dd/MM/yyyy').format(date);
+				quotationProvider.quotation.fecha = DateFormat('dd/MM/yyyy').format(date);
 
 				//? Asignar el valor al controlador del TextFormField
-				_controllerDatePicker.text = _quotation.fecha;
+				_controllerDatePicker.text = quotationProvider.quotation.fecha;
 			});
 		}
 	}
