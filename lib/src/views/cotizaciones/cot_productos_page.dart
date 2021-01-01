@@ -43,9 +43,6 @@ class _ProductosCotState extends State<ProductosCotPage>
 
     initProviders(context);
 
-		//* Recepción del Id de la cotización que se está creando.
-		final String _quotationId = ModalRoute.of(context).settings.arguments;
-
 		return Scaffold(
 			appBar: AppBar(
 				title: Text('Agregar productos'),

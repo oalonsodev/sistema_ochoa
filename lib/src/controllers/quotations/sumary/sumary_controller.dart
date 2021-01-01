@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:sistema_ochoa/provider/product_form_provider.dart';
 import 'package:sistema_ochoa/provider/product_list_provider.dart';
 import 'package:sistema_ochoa/provider/quotation_provider.dart';
 
@@ -27,13 +26,19 @@ mixin QuotationSumaryController {
 	// /// Provedor de GlobalKeys
 	// ProductFormProvider formProvider;
 
-	//? => Stilos de textos
+	//? => Estilos de textos
 	/// Estilo para el nombre de los productos.
 	TextStyle title;
 	/// Estilo para los títulos de las propiedades.
 	TextStyle property;
 	/// Estilo para las propiedades de los productos.
 	TextStyle value;
+
+  //? => Variables
+  /// Indicador de la pantalla a navegar.
+  String nextRoute;
+  /// Indicador del tipo de acción a realizar en SavePage.
+  String savePageAction;
 
 	//* ======= Métodos =======
 	/// Inicializa los servicio a utilizar
@@ -169,4 +174,19 @@ mixin QuotationSumaryController {
 		quotationProvider.quotation.id
 			= await quotationService.createQuotation(quotationProvider.quotation);
 	}
+
+  /// Se encarga de hacer la navegación a la siguiente pantalla.
+  /// 
+  /// La siguiente pantalla puede ser:
+  /// - **'SavePage'** En este caso, nextRoute es igual a 'SavePage' y se envía
+  /// arguentos a la siguiente ruta.
+  /// 
+  /// - **'SelectProviderPage'** En este caso, nextRoute es igual a
+  /// 'SelectProviderPage' y no se envía argumentos a la siguiente ruta.
+  void nextPage(BuildContext context) {
+      Navigator.popAndPushNamed(
+        context,
+        nextRoute,
+        arguments: (nextRoute == 'QuotSave') ? savePageAction : null);
+  }
 }

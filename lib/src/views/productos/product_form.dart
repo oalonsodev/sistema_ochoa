@@ -92,6 +92,9 @@ class _ProductFormState extends State<ProductForm>
 		_formProvider = Provider.of(context);
 		_currentTabProvider = Provider.of(context);
 		
+    // TODO: Nuevo método
+    /// colocar la definición de la propiedad text de los controladores en un 
+    /// método separado.
 		//* Las siguientes lineas permiten que en los TextFormFields se redibujen
 		//* los datos actuales por cada producto de la lista de productos.
 		//* (para que se vayan los elementos que eliminemos 😉)

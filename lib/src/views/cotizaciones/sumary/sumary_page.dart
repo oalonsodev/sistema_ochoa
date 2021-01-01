@@ -27,17 +27,17 @@ class _QuotationSumaryPageState extends State<QuotationSumaryPage>
   }
 
   @override
-  Widget build(BuildContext context) {
-    initProducts(context);
-    initQuotation(context);
-    initStyles(context);
+  Widget build( BuildContext context ) {
+    initProducts( context );
+    initQuotation( context );
+    initStyles( context );
 
     return Scaffold(
       appBar: _appBar(),
       body: CustomScrollView(
         slivers: [_header(), _body()],
       ),
-      persistentFooterButtons: _createPersistentFooterButtons(),
+      persistentFooterButtons: _createPersistentFooterButtons( context ),
     );
   }
 
@@ -54,39 +54,44 @@ class _QuotationSumaryPageState extends State<QuotationSumaryPage>
   SliverList _body() {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
+        ( BuildContext context, int index ) {
           return Card(
-            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 25),
+            margin: EdgeInsets.symmetric( vertical: 8.0, horizontal: 25.0 ),
             elevation: 3.0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0)
+              borderRadius: BorderRadius.circular( 10.0 )
             ),
             child: Container(
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.all( 16.0 ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: createProductProperties(index)
+                children: createProductProperties( index )
               ),
             )
           );
         },
-        childCount: productProvider.getProductList.length,
+        childCount: productProvider.getProductList.length ?? 1,
       )
     );
   }
 
-  List<Widget> _createPersistentFooterButtons() {
+  List<Widget> _createPersistentFooterButtons( BuildContext context ) {
     return [
       TextButton(
         child: Text('Guardar'),
         onPressed: () {
-          saveProducts().then((value) => saveQuotation());
+          saveProducts().then( (value) => saveQuotation() );
+          nextRoute = 'QuotSave';
+          savePageAction = 'Save';
+          nextPage( context );
         },
       ),
       ElevatedButton(
         child: Text('Guardar y cotizar'),
         onPressed: () {
-          saveProducts().then((value) => saveQuotation());
+          saveProducts().then( (value) => saveQuotation() );
+          nextRoute = 'SelectProviderPage';
+          nextPage( context );
         }
       ),
     ];
