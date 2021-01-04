@@ -4,7 +4,6 @@ import 'package:sistema_ochoa/src/models/product_model.dart';
 
 class ProductService {
   final String _url = 'https://proyectoochoasc.firebaseio.com';
-  // List<String> productList;
 
   Future<String> createProducts(ProductModel product) async {
     final url = '$_url/product.json';
