@@ -21,10 +21,6 @@ mixin QuotationSumaryController {
 	QuotationProvider quotationProvider;
 	/// Proveedor de productos
 	ProductListProvider productProvider;
-  // TODO: Eliminar
-  /// El FormProvider se utiliza hasta que haya que eliminar la lista.
-	// /// Provedor de GlobalKeys
-	// ProductFormProvider formProvider;
 
 	//? => Estilos de textos
 	/// Estilo para el nombre de los productos.
@@ -142,23 +138,9 @@ mixin QuotationSumaryController {
 	/// Publicar en linea los productos de la cotización.
 	Future saveProducts() async {
 		//? Publicar los productos en linea.
-			for (ProductModel product in productProvider.getProductList) {
-				product.id = await productService.createProducts(product);
-			}
-
-			// TODO: Mover de lugar.
-			/// Las siguientes lineas deben ejecutarse hasta que el proceso
-			/// finalice por completo, ya sea en la pantalla
-			/// 'Datos guardados' o 'Solicitud en proceso' en el botón 'finalizar'
-			// //? Vaciar la lista de productos local.
-			// productProvider.clearList();
-			
-			// //? Vaciar la lista de llaves locales.
-			// formProvider.clearList();
-
-			// //? Restaurar la cotización
-			// quotationProvider.resetQuotation();
-
+    for (ProductModel product in productProvider.getProductList) {
+      product.id = await productService.createProducts(product);
+    }
 	}
 
 	/// Publicar en linea los datos de la cotización.
@@ -184,9 +166,9 @@ mixin QuotationSumaryController {
   /// - **'SelectProviderPage'** En este caso, nextRoute es igual a
   /// 'SelectProviderPage' y no se envía argumentos a la siguiente ruta.
   void nextPage(BuildContext context) {
-      Navigator.popAndPushNamed(
-        context,
-        nextRoute,
-        arguments: (nextRoute == 'QuotSave') ? savePageAction : null);
+    Navigator.popAndPushNamed(
+      context,
+      nextRoute,
+      arguments: (nextRoute == 'QuotSave') ? savePageAction : null);
   }
 }

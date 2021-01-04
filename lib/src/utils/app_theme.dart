@@ -17,7 +17,6 @@ ThemeData appTheme(){
 		),
 		iconTheme: IconThemeData(
 			color: Colors.indigo,
-			size: 96.0
 		)
 	);
 }

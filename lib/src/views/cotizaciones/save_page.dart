@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:sistema_ochoa/provider/product_form_provider.dart';
+import 'package:sistema_ochoa/provider/product_list_provider.dart';
+import 'package:sistema_ochoa/provider/quotation_provider.dart';
 
 class SavePage extends StatelessWidget {
 	@override
 	Widget build(BuildContext context) {
 		String action = ModalRoute.of(context).settings.arguments;
-		
+
 		final TextStyle titleStyle =
 			Theme.of(context).textTheme.headline4.apply( color: Colors.indigo );
 		final TextStyle captionStyle =
@@ -68,23 +73,42 @@ class SavePage extends StatelessWidget {
 			child: Column(
 				mainAxisAlignment: MainAxisAlignment.center,
 				children: [
-					Icon(Icons.check_circle),
+					Icon(Icons.check_circle, size: 96.0),
 					SizedBox(height: 8.0),
 					Text(title ?? 'title', style: titleStyle),
 					SizedBox(height: 8.0),
-					Text(caption ?? 'caption', style: captionStyle, textAlign: TextAlign.center,)
+					Text(
+						caption ?? 'caption',
+						style: captionStyle,
+						textAlign: TextAlign.center
+					)
 				],
 			),
 		);
 	}
 
 	List<Widget> _createPersistentFooterButtons(BuildContext context, String buttonTitle, Function f) {
+		//? => Providers
+		/// Proveedor de la cotización actual.
+		QuotationProvider quotationProvider = Provider.of(context);
+		/// Proveedor de productos
+		ProductListProvider productProvider = Provider.of(context);
+		/// Provedor de GlobalKeys
+		ProductFormProvider formProvider = Provider.of(context);
+
 		return [
 			TextButton(
 				child: Text('Finalizar'),
 				onPressed: () {
-					//TODO: Mover aquí
-					/// Ejecutar aquí las lineas encargadas de restaurar los Providers.
+					//? Vaciar la lista de productos local.
+					productProvider.clearList();
+					
+					//? Vaciar la lista de llaves locales.
+					formProvider.clearList();
+
+					//? Restaurar la cotización local.
+					quotationProvider.resetQuotation();
+
 					Navigator.pushReplacementNamed(context, 'home');
 				},
 			),

@@ -90,7 +90,7 @@ class _QuotationSumaryPageState extends State<QuotationSumaryPage>
         child: Text('Guardar y cotizar'),
         onPressed: () {
           saveProducts().then( (value) => saveQuotation() );
-          nextRoute = 'SelectProviderPage';
+          nextRoute = 'SelecPro';
           nextPage( context );
         }
       ),
